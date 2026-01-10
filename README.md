@@ -54,7 +54,7 @@ Browse admin-curated items across 5 pages.
 
 ### Installation
 
-1. Download the latest `VirtualKit-x.x.x.jar` from [Releases](../../releases)
+1. Download the latest `VirtualKit-x.x.x.jar` from BuiltByBit.
 2. Place it in your server's `plugins/` folder
 3. Start your server
 4. Stop the server and configure `plugins/VirtualKit/config.yml`
