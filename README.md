@@ -50,8 +50,7 @@ Drag and drop items to create your perfect loadout.
 ### Kit Room
 Browse admin-curated items across 5 pages.
 
-<img width="541" height="390" alt="image" src="https://github.com/user-attachments/assets/07e3def6-de96-45b3-8023-9116185bef42" />
-<img width="528" height="379" alt="image" src="https://github.com/user-attachments/assets/8df0bd3c-4439-487e-a3fb-ab497fbcf2d3" />
+<img width="541" height="390" alt="image" src="https://github.com/user-attachments/assets/07e3def6-de96-45b3-8023-9116185bef42" /> <img width="528" height="379" alt="image" src="https://github.com/user-attachments/assets/8df0bd3c-4439-487e-a3fb-ab497fbcf2d3" />
 <img width="520" height="377" alt="image" src="https://github.com/user-attachments/assets/338681f2-c566-4252-90fe-a30a9eefe5d3" />
 <img width="522" height="385" alt="image" src="https://github.com/user-attachments/assets/79b9a83a-0d0f-4e0b-b301-7515a0721c6c" />
 <img width="520" height="376" alt="image" src="https://github.com/user-attachments/assets/383c2f9e-5acc-4055-ba9e-74154a9a250a" />
