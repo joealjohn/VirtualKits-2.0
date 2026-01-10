@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/badge/Version-2.0.0-orange?style=for-the-badge" alt="Version">
 </p>
 
-<h1 align="center">⚔️ VirtualKit</h1>
+<h1 align="center">⚔️ VirtualKit 2.0</h1>
 
 <p align="center">
   <b>The ultimate per-player kit management system for PvP servers</b><br>
@@ -39,12 +39,23 @@
 
 ### Main Menu
 Players can view all their kit and enderchest slots at a glance.
+<img width="518" height="386" alt="image" src="https://github.com/user-attachments/assets/71cb9a06-7aa4-48a5-b0f6-baa5db980f94" />
 
 ### Kit Editor
 Drag and drop items to create your perfect loadout.
+<img width="844" height="403" alt="image" src="https://github.com/user-attachments/assets/c4d28486-c4cf-4618-87d0-60b7dc25c9f0" />
 
 ### Kit Room
 Browse admin-curated items across 5 pages.
+<img width="541" height="390" alt="image" src="https://github.com/user-attachments/assets/07e3def6-de96-45b3-8023-9116185bef42" />
+<img width="528" height="379" alt="image" src="https://github.com/user-attachments/assets/8df0bd3c-4439-487e-a3fb-ab497fbcf2d3" />
+<img width="520" height="377" alt="image" src="https://github.com/user-attachments/assets/338681f2-c566-4252-90fe-a30a9eefe5d3" />
+<img width="522" height="385" alt="image" src="https://github.com/user-attachments/assets/79b9a83a-0d0f-4e0b-b301-7515a0721c6c" />
+<img width="520" height="376" alt="image" src="https://github.com/user-attachments/assets/383c2f9e-5acc-4055-ba9e-74154a9a250a" />
+
+
+
+
 
 </details>
 
