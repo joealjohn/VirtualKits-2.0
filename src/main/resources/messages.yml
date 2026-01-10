@@ -1,0 +1,177 @@
+# ╔═══════════════════════════════════════════════════════════════════════════════╗
+# ║                        VIRTUALKIT MESSAGES v2.0                               ║
+# ╚═══════════════════════════════════════════════════════════════════════════════╝
+# 
+# COLOR GUIDE:
+# - Hex colors: <#00FF00> (green), <#FF69B4> (pink), <#ffa6a6> (red)
+# - Named colors: <red>, <green>, <gold>, <gray>, <white>
+# - Formatting: <bold>, <italic>, <underlined>, <strikethrough>
+# - Gradients: <gradient:#00FF00:#32CD32>text</gradient>
+#
+# PLACEHOLDERS:
+# - %player% - Player name
+# - %slot% - Kit/EC slot number (1-9)
+# - %code% - Share code
+# - %page% - Kit room page
+# - %seconds% - Cooldown seconds
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                              PREFIX
+# ═══════════════════════════════════════════════════════════════════════════════
+# This prefix appears before all chat messages
+prefix: "<bold><#00FF00>KITS</bold> <dark_gray>»</dark_gray> "
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                         TITLE MESSAGES
+# ═══════════════════════════════════════════════════════════════════════════════
+# These appear as big text on the player's screen when saving kits/EC
+# Uses legacy color codes: §a = green, §7 = gray, §l = bold
+# Timing: fadeIn, stay, fadeOut (in ticks, 20 ticks = 1 second)
+titles:
+  kit-saved:
+    enabled: true
+    title: "§aᴋɪᴛ ꜱᴀᴠᴇᴅ"
+    subtitle: "§7ꜱʟᴏᴛ %slot%"
+    fade-in: 5
+    stay: 30
+    fade-out: 10
+  ec-saved:
+    enabled: true
+    title: "§aᴇᴄ ꜱᴀᴠᴇᴅ"
+    subtitle: "§7ꜱʟᴏᴛ %slot%"
+    fade-in: 5
+    stay: 30
+    fade-out: 10
+  kit-copied:
+    enabled: true
+    title: "§aᴋɪᴛ ɪᴍᴘᴏʀᴛᴇᴅ"
+    subtitle: "§7ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ"
+    fade-in: 5
+    stay: 40
+    fade-out: 10
+  kit-empty:
+    enabled: true
+    title: "§cɴᴏᴛ ꜱᴀᴠᴇᴅ"
+    subtitle: "§7ᴇᴍᴘᴛʏ ᴋɪᴛ"
+    fade-in: 5
+    stay: 40
+    fade-out: 10
+  premade-kit-saved:
+    enabled: true
+    title: "§aᴘʀᴇᴍᴀᴅᴇ ꜱᴀᴠᴇᴅ"
+    subtitle: "§7ꜱᴜᴄᴄᴇꜱꜱꜰᴜʟʟʏ"
+    fade-in: 5
+    stay: 40
+    fade-out: 10
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                        PERSONAL MESSAGES
+# ═══════════════════════════════════════════════════════════════════════════════
+# These are sent to the player who performs the action (chat messages)
+messages:
+  # Success messages (green)
+  kit-loaded: "<#7cff6e>Kit %slot% loaded successfully!"
+  kit-saved: "<#7cff6e>Kit %slot% saved successfully!"
+  kit-deleted: "<#7cff6e>Kit %slot% deleted!"
+  ec-loaded: "<#7cff6e>Enderchest %slot% loaded successfully!"
+  ec-saved: "<#7cff6e>Enderchest %slot% saved successfully!"
+  ec-deleted: "<#7cff6e>Enderchest %slot% deleted!"
+  public-kit-loaded: "<#7cff6e>Premade kit loaded successfully!"
+  inventory-cleared: "<#7cff6e>Inventory cleared!"
+  items-repaired: "<#7cff6e>All items repaired!"
+  healed: "<#7cff6e>You have been healed!"
+  regeared: "<#7cff6e>Regeared!"
+  regear-shulker: "<#7cff6e>Regear shulker given!"
+  kitroom-saved: "<#7cff6e>Saved kitroom page %page%"
+  
+  # Error messages (red)
+  no-permission: "<#ffa6a6>You do not have permission to use this command."
+  kit-not-found: "<#ffa6a6>Kit %slot% does not exist!"
+  ec-not-found: "<#ffa6a6>Enderchest %slot% does not exist!"
+  player-not-found: "<#ffa6a6>Could not find player %player%"
+  command-disabled: "<#ffa6a6>Kits are disabled in this world!"
+  no-kit-loaded: "<#ffa6a6>You have not loaded a kit yet!"
+  inventory-full: "<#ffa6a6>Your inventory is full!"
+  combat-cooldown: "<#ffa6a6>You must be out of combat for %seconds% more seconds!"
+  command-cooldown: "<#ffa6a6>You must wait %seconds% seconds before using this command!"
+  elytra-block: "<#ffa6a6>You cannot regear while using an elytra!"
+  config-error: "<#ffa6a6>This command is not configured correctly!"
+  premade-kit-empty: "<#ffa6a6>The premade kit is empty."
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                        SHARE MESSAGES
+# ═══════════════════════════════════════════════════════════════════════════════
+# Messages for kit/EC sharing feature
+share:
+  code-created: "<#00FF00>Use /copykit %code% to copy this kit"
+  code-expires: "<gray>Code expires in 15 minutes"
+  ec-code-created: "<#FF69B4>Use /copyec %code% to copy this enderchest"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                        BROADCAST MESSAGES
+# ═══════════════════════════════════════════════════════════════════════════════
+# These are shown to nearby players (with permission) when someone does an action
+# Set enabled: false to disable specific broadcasts
+broadcast:
+  # Permission required to see broadcasts
+  permission: "virtualkit.kitnotify"
+  
+  player-repaired:
+    enabled: true
+    message: "<#FF5C1D>%player% <#FD7641>repaired their gear."
+  player-healed:
+    enabled: true
+    message: "<#FF5C1D>%player% <#FD7641>healed themselves."
+  player-opened-kit-room:
+    enabled: true
+    message: "<#FF5C1D>%player% <#FD7641>opened the <#FF5C1D>Virtual Kit Room<#FD7641>."
+  player-loaded-private-kit:
+    enabled: true
+    message: "<#FF5C1D>%player% <#FD7641>loaded <#FF5C1D>Kit %slot%<#FD7641>."
+  player-loaded-public-kit:
+    enabled: true
+    message: "<#FF5C1D>%player% <#FD7641>loaded a <#FF5C1D>premade kit<#FD7641>."
+  player-loaded-enderchest:
+    enabled: true
+    message: "<#FF5C1D>%player% <#FD7641>loaded <#FF5C1D>Enderchest %slot%<#FD7641>."
+  player-copied-kit:
+    enabled: true
+    message: "<#FF5C1D>%player% <#FD7641>copied a kit."
+  player-copied-ec:
+    enabled: true
+    message: "<#FF5C1D>%player% <#FD7641>copied an enderchest."
+  player-regeared:
+    enabled: true
+    message: "<#FF5C1D>%player% <#FD7641>regeared."
+  player-saved-kit:
+    enabled: true
+    message: "<#FF5C1D>%player% <#FD7641>saved <#FF5C1D>Kit %slot%<#FD7641>."
+  player-saved-ec:
+    enabled: true
+    message: "<#FF5C1D>%player% <#FD7641>saved <#FF5C1D>Enderchest %slot%<#FD7641>."
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                             MOTD
+# ═══════════════════════════════════════════════════════════════════════════════
+# Welcome message shown to players when they join
+motd:
+  enabled: true
+  delay: 3  # Seconds after join before showing message
+  message:
+    - ""
+    - "<gradient:#00FF00:#32CD32><bold>ᴠɪʀᴛᴜᴀʟᴋɪᴛ</bold></gradient>"
+    - ""
+    - "<gray>ᴛʏᴘᴇ <#00FF00>/ᴋɪᴛ<gray> ᴛᴏ ᴏᴘᴇɴ ᴛʜᴇ ᴍᴀɪɴ ᴍᴇɴᴜ"
+    - "<gray>ᴛʏᴘᴇ <#00FF00>/ᴘᴋ<gray> ᴛᴏ ʟᴏᴀᴅ ᴘʀᴇᴍᴀᴅᴇ ᴋɪᴛꜱ"
+    - ""
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                       SCHEDULED BROADCAST
+# ═══════════════════════════════════════════════════════════════════════════════
+# Periodic tip messages sent to all players
+scheduled-broadcast:
+  enabled: false
+  period: 90  # Seconds between broadcasts
+  messages:
+    - "<white>Check out public kits with <#00FF00>/pk<white>!"
+    - "<white>Want to share a kit? Use <#00FF00>/sharekit <slot><white>!"

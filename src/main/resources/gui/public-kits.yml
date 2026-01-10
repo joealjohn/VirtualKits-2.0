@@ -1,0 +1,43 @@
+# ╔═══════════════════════════════════════════════════════════════════════════════╗
+# ║                       ᴘᴜʙʟɪᴄ ᴋɪᴛꜱ ɢᴜɪ ᴄᴏɴꜰɪɢ                                  ║
+# ╚═══════════════════════════════════════════════════════════════════════════════╝
+# Supports hex colors: <#00FF00> for lime, <#FF69B4> for pink, etc.
+
+# ─────────────────────────────────────────────────────────────────────────────────
+#                              LAYOUT SETTINGS
+# ─────────────────────────────────────────────────────────────────────────────────
+layout:
+  # Menu size in rows (1-6)
+  rows: 3
+  
+  # Public kit slot positions (comma-separated)
+  # Each kit in config.yml kitroom.items will be placed at these positions
+  # Example: first kit at slot 9, second at 10, etc.
+  kit-slots: "9,10,11,12,13,14,15,16,17"
+  
+  # Close button slot position
+  close-button-slot: 22
+
+# ─────────────────────────────────────────────────────────────────────────────────
+#                              BUTTONS
+# ─────────────────────────────────────────────────────────────────────────────────
+close-button:
+  material: BARRIER
+  name: "<#FF4444><bold>ᴄʟᴏꜱᴇ"
+
+load-button:
+  material: APPLE
+  name: "<#00FF00><bold>ʟᴏᴀᴅ ᴋɪᴛ"
+
+# ─────────────────────────────────────────────────────────────────────────────────
+#                              KIT DISPLAY
+# ─────────────────────────────────────────────────────────────────────────────────
+coming-soon:
+  material: BOOK
+  name: "<gray><bold>ᴍᴏʀᴇ ᴋɪᴛꜱ ᴄᴏᴍɪɴɢ ꜱᴏᴏɴ"
+
+unassigned-tag: "<#FF4444><bold>[ᴜɴᴀꜱꜱɪɢɴᴇᴅ]"
+unassigned-lore:
+  - "<gray>● ᴀᴅᴍɪɴꜱ ʜᴀᴠᴇ ɴᴏᴛ ʏᴇᴛ ꜱᴇᴛᴜᴘ ᴛʜɪꜱ ᴋɪᴛ"
+
+admin-edit-lore: "<gray>● [ᴀᴅᴍɪɴ] ꜱʜɪꜰᴛ ᴄʟɪᴄᴋ ᴛᴏ ᴇᴅɪᴛ"

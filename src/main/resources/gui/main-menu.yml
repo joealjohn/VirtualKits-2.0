@@ -1,0 +1,92 @@
+# ╔═══════════════════════════════════════════════════════════════════════════════╗
+# ║                         MAIN MENU GUI CONFIG                                  ║
+# ╚═══════════════════════════════════════════════════════════════════════════════╝
+# Supports hex colors: <#00FF00> for lime, <#FF69B4> for pink, etc.
+
+# ─────────────────────────────────────────────────────────────────────────────────
+#                              LAYOUT SETTINGS
+# ─────────────────────────────────────────────────────────────────────────────────
+layout:
+  # Menu size in rows (1-6)
+  rows: 6
+  
+  # Kit slot positions (comma-separated, 0-53)
+  # Remove numbers to hide slots, add numbers to show more
+  # Default: 9,10,11,12,13,14,15,16,17 (row 2, all 9 slots)
+  kit-slots: "9,10,11,12,13,14,15,16,17"
+  
+  # Enderchest slot positions (comma-separated, 0-53)
+  # Remove numbers to hide slots, add numbers to show more
+  # Default: 18,19,20,21,22,23,24,25,26 (row 3, all 9 slots)
+  ec-slots: "18,19,20,21,22,23,24,25,26"
+  
+  # Bottom row button positions
+  buttons:
+    kit-room: 37
+    premade-kits: 38
+    info: 39
+    clear-inventory: 41
+    share-kits: 42
+    repair-items: 43
+
+# ─────────────────────────────────────────────────────────────────────────────────
+#                              KIT SLOTS
+# ─────────────────────────────────────────────────────────────────────────────────
+kit-slot:
+  material: CHEST
+  name: "<#00FF00><bold>ᴋɪᴛ %slot%"
+  lore:
+    - "<gray>● ʟᴇꜰᴛ ᴄʟɪᴄᴋ ᴛᴏ ʟᴏᴀᴅ ᴋɪᴛ"
+    - "<gray>● ʀɪɢʜᴛ ᴄʟɪᴄᴋ ᴛᴏ ᴇᴅɪᴛ ᴋɪᴛ"
+
+# ─────────────────────────────────────────────────────────────────────────────────
+#                           ENDER CHEST SLOTS
+# ─────────────────────────────────────────────────────────────────────────────────
+enderchest-slot:
+  material: ENDER_CHEST
+  name: "<#FF69B4><bold>ᴇɴᴅᴇʀ ᴄʜᴇꜱᴛ %slot%"
+  lore:
+    - "<gray>● ʟᴇꜰᴛ ᴄʟɪᴄᴋ ᴛᴏ ʟᴏᴀᴅ"
+    - "<gray>● ʀɪɢʜᴛ ᴄʟɪᴄᴋ ᴛᴏ ᴇᴅɪᴛ"
+
+enderchest-create:
+  material: ENDER_CHEST
+  name: "<#FF69B4><bold>ᴇɴᴅᴇʀ ᴄʜᴇꜱᴛ %slot%"
+  lore:
+    - "<gray>● ᴄʟɪᴄᴋ ᴛᴏ ᴄʀᴇᴀᴛᴇ"
+
+# ─────────────────────────────────────────────────────────────────────────────────
+#                           BOTTOM ROW BUTTONS
+# ─────────────────────────────────────────────────────────────────────────────────
+kit-room-button:
+  material: NETHER_STAR
+  name: "<#00FF00><bold>ᴋɪᴛ ʀᴏᴏᴍ"
+
+premade-kits-button:
+  material: BOOKSHELF
+  name: "<#FFD700><bold>ᴘʀᴇᴍᴀᴅᴇ ᴋɪᴛꜱ"
+
+info-button:
+  material: OAK_SIGN
+  name: "<#00FF00><bold>ɪɴꜰᴏ"
+  lore:
+    - "<gray>● ᴄʟɪᴄᴋ ᴀ ᴋɪᴛ ꜱʟᴏᴛ ᴛᴏ ʟᴏᴀᴅ"
+    - "<gray>● ʀɪɢʜᴛ ᴄʟɪᴄᴋ ᴏʀ ᴄʟɪᴄᴋ ᴛʜᴇ ʙᴏᴏᴋ ᴛᴏ ᴇᴅɪᴛ"
+    - "<gray>● ꜱʜᴀʀᴇ ᴋɪᴛꜱ ᴡɪᴛʜ /ꜱʜᴀʀᴇᴋɪᴛ <ꜱʟᴏᴛ>"
+    - "<gray>● ʟᴏᴀᴅ ꜱʜᴀʀᴇᴅ ᴋɪᴛꜱ ᴡɪᴛʜ /ᴄᴏᴘʏᴋɪᴛ <ᴄᴏᴅᴇ>"
+
+clear-inventory-button:
+  material: REDSTONE_BLOCK
+  name: "<#FF4444><bold>ᴄʟᴇᴀʀ ɪɴᴠᴇɴᴛᴏʀʏ"
+  lore:
+    - "<gray>● ꜱʜɪꜰᴛ ᴄʟɪᴄᴋ"
+
+share-kits-button:
+  material: COMPASS
+  name: "<#00FF00><bold>ꜱʜᴀʀᴇ ᴋɪᴛꜱ"
+  lore:
+    - "<gray>● /ꜱʜᴀʀᴇᴋɪᴛ <ꜱʟᴏᴛ>"
+
+repair-items-button:
+  material: EXPERIENCE_BOTTLE
+  name: "<#00FF00><bold>ʀᴇᴘᴀɪʀ ɪᴛᴇᴍꜱ"

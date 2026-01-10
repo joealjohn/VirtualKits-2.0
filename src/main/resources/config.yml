@@ -1,0 +1,201 @@
+# ╔═══════════════════════════════════════════════════════════════════════════════╗
+# ║                           ᴠɪʀᴛᴜᴀʟᴋɪᴛ ᴠ2.0.0                                   ║
+# ║                              ʙʏ ᴀᴄᴇ                                           ║
+# ╚═══════════════════════════════════════════════════════════════════════════════╝
+# Color Guide: <#00FF00> hex, <lime> named, <bold> formatting
+
+config-version: 2
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                               ꜱᴛᴏʀᴀɢᴇ
+# ═══════════════════════════════════════════════════════════════════════════════
+# Storage type for saving kits and enderchests
+# Options: sqlite (default), mysql, redis, yml
+# - sqlite: Local database file, best for single servers
+# - mysql: Remote MySQL database, best for networks
+# - redis: Redis cache, for advanced setups
+# - yml: YAML file storage (kits-data.yml), simple but slower
+storage:
+  type: "sqlite"
+
+# MySQL database settings (only used if storage.type is "mysql")
+mysql:
+  host: "localhost"
+  port: "3306"
+  dbname: "virtualkitdb"
+  username: "username"
+  password: "password"
+  useSSL: false
+  maximumPoolSize: 10
+
+# Redis settings (only used if storage.type is "redis")
+redis:
+  host: "localhost"
+  port: 6379
+  password: "password"
+
+# Auto-backup (only for YML storage - creates backup in /backup folder on shutdown)
+backup:
+  enabled: true
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                             ᴀᴘᴘᴇᴀʀᴀɴᴄᴇ
+# ═══════════════════════════════════════════════════════════════════════════════
+# Customize the look and feel of the plugin
+appearance:
+  # Primary color used in GUI titles (MiniMessage format)
+  primary-color: "<#00FF00>"
+  # Glass pane material for GUI backgrounds
+  glass-material: LIME_STAINED_GLASS_PANE
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                           ꜱʟᴏᴛ ɪᴄᴏɴꜱ
+# ═══════════════════════════════════════════════════════════════════════════════
+# Icons for kit and EC slots in main menu (based on whether slot is empty or saved)
+slot-icons:
+  # Kit slots (uses shulker boxes by default)
+  kit-empty: RED_SHULKER_BOX       # Icon when kit slot is empty
+  kit-saved: LIME_SHULKER_BOX      # Icon when kit slot has a saved kit
+  # Enderchest slots (uses ender chest by default)
+  ec-empty: ENDER_CHEST            # Icon when EC slot is empty
+  ec-saved: ENDER_CHEST            # Icon when EC slot has saved items
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                           ᴇᴄ ᴄᴏᴏʟᴅᴏᴡɴ
+# ═══════════════════════════════════════════════════════════════════════════════
+# Cooldown for /ec1, /ec2, etc. commands
+# Players must wait or get a kill before using again
+ec-cooldown:
+  enabled: true
+  # Cooldown time in seconds (0 = no time cooldown, only kill resets)
+  time-seconds: 60
+  # Reset cooldown when player gets a kill
+  reset-on-kill: true
+  # Message shown when on cooldown
+  cooldown-message: "<#FF4444>ᴇᴄ ᴄᴏᴏʟᴅᴏᴡɴ: <white>%time%s <#FF4444>ᴏʀ ɢᴇᴛ ᴀ ᴋɪʟʟ"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                              ᴋɪᴛʀᴏᴏᴍ
+# ═══════════════════════════════════════════════════════════════════════════════
+# Kit Room pages configuration (5 pages available)
+# Admins can fill these pages with items for players to use
+kitroom:
+  items:
+    1:
+      name: "<#FF4444><bold>ᴀʀᴍᴏʀʏ"
+      material: "NETHERITE_SWORD"
+    2:
+      name: "<#FFD700><bold>ᴄᴏɴꜱᴜᴍᴀʙʟᴇꜱ"
+      material: "GOLDEN_APPLE"
+    3:
+      name: "<#FF69B4><bold>ᴘᴏᴛɪᴏɴꜱ"
+      material: "SPLASH_POTION"
+    4:
+      name: "<#FFB6C1><bold>ᴇxᴘʟᴏꜱɪᴠᴇ"
+      material: "END_CRYSTAL"
+    5:
+      name: "<#00BFFF><bold>ᴀʀʀᴏᴡꜱ"
+      material: "ARROW"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                           ꜰᴇᴀᴛᴜʀᴇꜱ
+# ═══════════════════════════════════════════════════════════════════════════════
+# Worlds where VirtualKit commands are disabled
+disabled-command-worlds:
+  - "example_world"
+
+# Anti-exploit settings to prevent cheating
+anti-exploit:
+  # Only allow items from kit room in player kits
+  only-allow-kitroom-items: false
+  # Filter blacklisted items when importing inventory
+  import-filter: false
+  # Block commands with spaces (prevents exploit attempts)
+  block-spaces-in-commands: false
+  # Prevent shulker boxes from dropping items when broken
+  prevent-shulkers-dropping-items: false
+
+# Regear/Rekit settings
+regear:
+  # Mode: "command" = use /rg, "gui" = regear button in GUI
+  rg-mode: "command"
+  regear-mode: "command"
+  # Cooldown between regears (seconds)
+  command-cooldown: 5
+  # Cannot regear within X seconds of taking damage
+  damage-timer: 5
+  # Allow regearing while flying with elytra
+  allow-while-using-elytra: true
+  # Prevent players from putting items in regear inventory
+  prevent-putting-items-in-regear-inventory: false
+  # If true, whitelist becomes a blacklist
+  invert-whitelist: false
+  # Items that can be refilled via regear
+  whitelist:
+    - ENDER_PEARL
+    - END_CRYSTAL
+    - OBSIDIAN
+    - GLOWSTONE
+    - SPLASH_POTION
+    - NETHERITE_PICKAXE
+    - NETHERITE_SWORD
+    - SHIELD
+    - NETHERITE_AXE
+    - GOLDEN_APPLE
+    - EXPERIENCE_BOTTLE
+    - TIPPED_ARROW
+    - CROSSBOW
+    - BOW
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                        ᴋɪᴛ ʟᴏᴀᴅ ꜰᴇᴀᴛᴜʀᴇꜱ
+# ═══════════════════════════════════════════════════════════════════════════════
+# What happens when a player loads a kit or enderchest
+feature:
+  # Heal player to full health when loading a kit
+  set-health-on-kit-load: false
+  # Feed player to full hunger when loading a kit
+  set-hunger-on-kit-load: false
+  # Set saturation to max when loading a kit
+  set-saturation-on-kit-load: false
+  # Remove all potion effects when loading a kit
+  remove-potion-effects-on-kit-load: true
+  # Heal player when loading enderchest
+  heal-on-enderchest-load: false
+  # Feed player when loading enderchest
+  feed-on-enderchest-load: false
+  # Remove potion effects when using /heal command
+  heal-remove-effects: false
+  # Automatically give last kit on respawn after death
+  rekit-on-respawn: true
+  # Give kit to killer when they get a kill
+  rekit-on-kill: false
+  # Broadcast to server when player loads a kit
+  broadcast-kit-messages: true
+  # Broadcast player actions (save, load, etc.)
+  broadcast-on-player-action: true
+  # Show update message to admins on join
+  send-update-message-on-join: false
+  # Use old death drop behavior (pre-1.14)
+  old-death-drops: false
+
+# Use display name instead of player name in broadcasts
+use-display-name: false
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                           ꜱᴏᴜɴᴅꜱ
+# ═══════════════════════════════════════════════════════════════════════════════
+# Sound effects played during various actions
+sounds:
+  # Enable/disable all sounds
+  enabled: true
+  # Sound when action succeeds
+  success: ENTITY_PLAYER_LEVELUP
+  # Sound when action fails
+  failure: ENTITY_ITEM_BREAK
+  # Sound when clicking buttons
+  click: UI_BUTTON_CLICK
+  # Sound when opening GUI
+  open_gui: UI_BUTTON_CLICK
+  # Sound when closing GUI
+  close_gui: UI_BUTTON_CLICK

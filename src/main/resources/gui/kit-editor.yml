@@ -1,0 +1,56 @@
+# ╔═══════════════════════════════════════════════════════════════════════════════╗
+# ║                        ᴋɪᴛ ᴇᴅɪᴛᴏʀ ɢᴜɪ ᴄᴏɴꜰɪɢ                                  ║
+# ╚═══════════════════════════════════════════════════════════════════════════════╝
+# Supports hex colors: <#00FF00> for lime, <#FF69B4> for pink, etc.
+
+# ─────────────────────────────────────────────────────────────────────────────────
+#                             ᴀʀᴍᴏʀ ʟᴀʙᴇʟꜱ
+# ─────────────────────────────────────────────────────────────────────────────────
+boots-label:
+  material: CHAINMAIL_BOOTS
+  name: "<gray><bold>ʙᴏᴏᴛꜱ"
+
+leggings-label:
+  material: CHAINMAIL_LEGGINGS
+  name: "<gray><bold>ʟᴇɢɢɪɴɢꜱ"
+
+chestplate-label:
+  material: CHAINMAIL_CHESTPLATE
+  name: "<gray><bold>ᴄʜᴇꜱᴛᴘʟᴀᴛᴇ"
+
+helmet-label:
+  material: CHAINMAIL_HELMET
+  name: "<gray><bold>ʜᴇʟᴍᴇᴛ"
+
+offhand-label:
+  material: SHIELD
+  name: "<gray><bold>ᴏꜰꜰʜᴀɴᴅ"
+
+# ─────────────────────────────────────────────────────────────────────────────────
+#                           ᴀᴄᴛɪᴏɴ ʙᴜᴛᴛᴏɴꜱ
+# ─────────────────────────────────────────────────────────────────────────────────
+import-button:
+  material: CHEST
+  name: "<#00FF00><bold>ɪᴍᴘᴏʀᴛ"
+  lore:
+    - "<gray>● ɪᴍᴘᴏʀᴛ ꜰʀᴏᴍ ɪɴᴠᴇɴᴛᴏʀʏ"
+
+import-ec-button:
+  material: ENDER_CHEST
+  name: "<#FF69B4><bold>ɪᴍᴘᴏʀᴛ"
+  lore:
+    - "<gray>● ɪᴍᴘᴏʀᴛ ꜰʀᴏᴍ ᴇɴᴅᴇʀᴄʜᴇꜱᴛ"
+
+clear-button:
+  material: BARRIER
+  name: "<#FF4444><bold>ᴄʟᴇᴀʀ ᴋɪᴛ"
+  lore:
+    - "<gray>● ꜱʜɪꜰᴛ ᴄʟɪᴄᴋ ᴛᴏ ᴄʟᴇᴀʀ"
+
+back-button:
+  material: OAK_DOOR
+  name: "<#FF4444><bold>ᴇxɪᴛ"
+
+close-button:
+  material: OAK_DOOR
+  name: "<#FF4444><bold>ᴇxɪᴛ"
