@@ -39,14 +39,17 @@
 
 ### Main Menu
 Players can view all their kit and enderchest slots at a glance.
+
 <img width="518" height="386" alt="image" src="https://github.com/user-attachments/assets/71cb9a06-7aa4-48a5-b0f6-baa5db980f94" />
 
 ### Kit Editor
 Drag and drop items to create your perfect loadout.
+
 <img width="844" height="403" alt="image" src="https://github.com/user-attachments/assets/c4d28486-c4cf-4618-87d0-60b7dc25c9f0" />
 
 ### Kit Room
 Browse admin-curated items across 5 pages.
+
 <img width="541" height="390" alt="image" src="https://github.com/user-attachments/assets/07e3def6-de96-45b3-8023-9116185bef42" />
 <img width="528" height="379" alt="image" src="https://github.com/user-attachments/assets/8df0bd3c-4439-487e-a3fb-ab497fbcf2d3" />
 <img width="520" height="377" alt="image" src="https://github.com/user-attachments/assets/338681f2-c566-4252-90fe-a30a9eefe5d3" />
