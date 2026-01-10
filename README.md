@@ -254,7 +254,7 @@ VirtualKit is a fork and continuation of the original **PerPlayerKit** plugin.
 
 | Credit | Contribution |
 |--------|--------------|
-| [**PerPlayerKit**](https://github.com/noahbclarkson/PerPlayerKit) | Original plugin by Noah Clark |
+| [**PerPlayerKit**](https://github.com/rossnoah/PerPlayerKit) | Original plugin by rossnoah |
 | [**Canvas**](https://github.com/IPVP-MC/canvas) | GUI library |
 | **ACE** | VirtualKit 2.0 development |
 
@@ -264,5 +264,6 @@ Special thanks to the original developers for creating such an amazing foundatio
 
 <p align="center">
   Made with ❤️ by <b>ACE</b><br>
-  <i>Based on PerPlayerKit by Noah Clark</i>
+  <i>Based on PerPlayerKit by rossnoah</i>
 </p>
+
