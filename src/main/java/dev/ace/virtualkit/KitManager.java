@@ -310,6 +310,26 @@ public class KitManager {
 
         ItemStack[] kit = kitByKitIDMap.get(kitId);
         if (kit == null) {
+            // Fallback for private kits only (not public, not enderchest, not kitroom)
+            if (!isEnderChest && !kitId.startsWith("public") && !kitId.startsWith("kitroom")) {
+                ItemStack[] premade = kitByKitIDMap.get(IDUtil.getPublicKitId("premade"));
+                if (premade != null) {
+                    player.getInventory().setContents(premade.clone());
+                    applyKitLoadEffects(player, false);
+                    SoundManager.playSuccess(player);
+
+                    player.sendMessage(ChatColor.GRAY + "Your kit is empty. Loaded the " + ChatColor.GREEN + "Premade Kit" + ChatColor.GRAY + " instead!");
+
+                    // Track that they are using this slot for /regear
+                    try {
+                        int slot = Integer.parseInt(kitId.substring(kitId.length() - 1));
+                        lastKitUsedByPlayer.put(player.getUniqueId(), slot);
+                    } catch (Exception ignored) {}
+
+                    return true;
+                }
+            }
+
             if (notFoundMessage != null) {
                 player.sendMessage(ChatColor.RED + notFoundMessage);
                 SoundManager.playFailure(player);
