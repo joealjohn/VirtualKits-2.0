@@ -302,6 +302,18 @@ public class KitManager {
         return true;
     }
 
+    private boolean isKitEmpty(ItemStack[] kit) {
+        if (kit == null) {
+            return true;
+        }
+        for (ItemStack item : kit) {
+            if (item != null && !item.getType().isAir()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private boolean loadKitInternal(Player player, String kitId, String notFoundMessage, boolean isEnderChest,
             Runnable afterLoad) {
         if (player == null) {
@@ -309,13 +321,25 @@ public class KitManager {
         }
 
         ItemStack[] kit = kitByKitIDMap.get(kitId);
-        if (kit == null) {
+        if (isKitEmpty(kit)) {
             plugin.getLogger().info("[VK-Debug] Player kit is empty/null for ID: " + kitId);
             // Fallback for private kits only (not public, not enderchest, not kitroom)
             if (!isEnderChest && !kitId.startsWith("public") && !kitId.startsWith("kitroom")) {
-                String premadeId = IDUtil.getPublicKitId("premade");
-                ItemStack[] premade = kitByKitIDMap.get(premadeId);
-                plugin.getLogger().info("[VK-Debug] Attempting fallback. Premade ID in map: " + premadeId + " | Exists: " + (premade != null));
+                int slotNum = 1;
+                try {
+                    slotNum = Integer.parseInt(kitId.substring(kitId.length() - 1));
+                } catch (Exception ignored) {}
+
+                // Try "premade" first, then "kitX" slot-specific public kit, then first registered public kit
+                ItemStack[] premade = kitByKitIDMap.get(IDUtil.getPublicKitId("premade"));
+                if (premade == null) {
+                    premade = kitByKitIDMap.get(IDUtil.getPublicKitId("kit" + slotNum));
+                }
+                if (premade == null && !publicKitList.isEmpty()) {
+                    premade = kitByKitIDMap.get(IDUtil.getPublicKitId(publicKitList.get(0).id));
+                }
+
+                plugin.getLogger().info("[VK-Debug] Attempting fallback. Found premade: " + (premade != null));
                 if (premade != null) {
                     player.getInventory().setContents(premade.clone());
                     applyKitLoadEffects(player, false);
@@ -324,10 +348,7 @@ public class KitManager {
                     MessageManager.get().sendMessage(player, MessageManager.get().getPremadeFallback());
 
                     // Track that they are using this slot for /regear
-                    try {
-                        int slot = Integer.parseInt(kitId.substring(kitId.length() - 1));
-                        lastKitUsedByPlayer.put(player.getUniqueId(), slot);
-                    } catch (Exception ignored) {}
+                    lastKitUsedByPlayer.put(player.getUniqueId(), slotNum);
 
                     return true;
                 }
