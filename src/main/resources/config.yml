@@ -195,13 +195,15 @@ auto-rekit-on-world-join:
   only-if-empty: false
   # Tick delay after joining before the kit is applied (20 ticks = 1 second)
   delay-ticks: 5
-  # Per-world kit slot mapping.
-  # Format:   <world-name>: <kit-slot-number>  (1-9)
+  # Default kit to load for all worlds (can be slot 1-9 or public kit name like "premade")
+  default-kit: "premade"
+  # Per-world kit slot overrides.
+  # Format:   <world-name>: <kit-slot-number or public-kit-name>
   # Use slot 0 to disable auto-rekit for a specific world.
   worlds:
     world: 1
     world_nether: 1
-    # example_pvp_world: 2
+    # example_pvp_world: "premade"
 
 # Use display name instead of player name in broadcasts
 use-display-name: false

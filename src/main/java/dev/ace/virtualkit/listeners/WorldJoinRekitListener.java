@@ -109,10 +109,15 @@ public class WorldJoinRekitListener implements Listener {
         }
 
         // Get configured value (can be slot number or public kit name)
-        Object configVal = plugin.getConfig().get("auto-rekit-on-world-join.worlds." + worldName);
-        if (configVal == null) {
+        Object tempVal = plugin.getConfig().get("auto-rekit-on-world-join.worlds." + worldName);
+        if (tempVal == null) {
+            // Fall back to the default kit configured for all worlds
+            tempVal = plugin.getConfig().get("auto-rekit-on-world-join.default-kit");
+        }
+        if (tempVal == null) {
             return;
         }
+        final Object configVal = tempVal;
 
         long delayTicks = plugin.getConfig().getLong("auto-rekit-on-world-join.delay-ticks", 5L);
         boolean onlyIfEmpty = plugin.getConfig().getBoolean("auto-rekit-on-world-join.only-if-empty", false);
