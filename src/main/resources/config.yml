@@ -208,6 +208,9 @@ auto-rekit-on-world-join:
 # Use display name instead of player name in broadcasts
 use-display-name: false
 
+# Enable debug logs in console (useful for troubleshooting)
+debug: false
+
 # ═══════════════════════════════════════════════════════════════════════════════
 #                           ꜱᴏᴜɴᴅꜱ
 # ═══════════════════════════════════════════════════════════════════════════════

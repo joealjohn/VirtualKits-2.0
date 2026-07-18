@@ -322,7 +322,9 @@ public class KitManager {
 
         ItemStack[] kit = kitByKitIDMap.get(kitId);
         if (isKitEmpty(kit)) {
-            plugin.getLogger().info("[VK-Debug] Player kit is empty/null for ID: " + kitId);
+            if (plugin.getConfig().getBoolean("debug", false)) {
+                plugin.getLogger().info("[VK-Debug] Player kit is empty/null for ID: " + kitId);
+            }
             // Fallback for private kits only (not public, not enderchest, not kitroom)
             if (!isEnderChest && !kitId.startsWith("public") && !kitId.startsWith("kitroom")) {
                 int slotNum = 1;
@@ -339,7 +341,9 @@ public class KitManager {
                     premade = kitByKitIDMap.get(IDUtil.getPublicKitId(publicKitList.get(0).id));
                 }
 
-                plugin.getLogger().info("[VK-Debug] Attempting fallback. Found premade: " + (premade != null));
+                if (plugin.getConfig().getBoolean("debug", false)) {
+                    plugin.getLogger().info("[VK-Debug] Attempting fallback. Found premade: " + (premade != null));
+                }
                 if (premade != null) {
                     player.getInventory().setContents(premade.clone());
                     applyKitLoadEffects(player, false);
