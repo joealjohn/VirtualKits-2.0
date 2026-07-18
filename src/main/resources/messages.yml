@@ -82,6 +82,7 @@ messages:
   healed: "<#7cff6e>You have been healed!"
   regeared: "<#7cff6e>Regeared!"
   regear-shulker: "<#7cff6e>Regear shulker given!"
+  premade-fallback: "<gray>Your kit is empty. Loaded the <#7cff6e>Premade Kit</#7cff6e> instead!"
   kitroom-saved: "<#7cff6e>Saved kitroom page %page%"
   
   # Error messages (red)

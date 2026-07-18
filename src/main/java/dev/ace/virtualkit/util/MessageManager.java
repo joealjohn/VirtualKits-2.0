@@ -111,6 +111,10 @@ public class MessageManager {
         return get("messages.public-kit-loaded", "<#7cff6e>Premade kit loaded successfully!");
     }
 
+    public String getPremadeFallback() {
+        return get("messages.premade-fallback", "<gray>Your kit is empty. Loaded the <#7cff6e>Premade Kit</#7cff6e> instead!");
+    }
+
     public String getKitSaved() {
         return get("messages.kit-saved", "<#7cff6e>Kit saved successfully!");
     }

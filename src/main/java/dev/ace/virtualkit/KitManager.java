@@ -318,7 +318,7 @@ public class KitManager {
                     applyKitLoadEffects(player, false);
                     SoundManager.playSuccess(player);
 
-                    player.sendMessage(ChatColor.GRAY + "Your kit is empty. Loaded the " + ChatColor.GREEN + "Premade Kit" + ChatColor.GRAY + " instead!");
+                    MessageManager.get().sendMessage(player, MessageManager.get().getPremadeFallback());
 
                     // Track that they are using this slot for /regear
                     try {
