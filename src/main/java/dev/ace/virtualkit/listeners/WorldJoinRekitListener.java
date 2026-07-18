@@ -144,13 +144,13 @@ public class WorldJoinRekitListener implements Listener {
                 int slot = ((Number) configVal).intValue();
                 if (slot > 0 && slot <= 9) {
                     plugin.getLogger().info("[VK-Debug] Loading private kit slot: " + slot);
-                    KitManager.get().loadKitSilent(player, slot);
+                    KitManager.get().loadKit(player, slot);
                 }
             } else {
                 String kitId = configVal.toString();
                 if (!kitId.isEmpty() && !kitId.equals("0")) {
                     plugin.getLogger().info("[VK-Debug] Loading public kit: " + kitId);
-                    KitManager.get().loadPublicKitSilent(player, kitId);
+                    KitManager.get().loadPublicKit(player, kitId);
                 }
             }
         }, delayTicks);
