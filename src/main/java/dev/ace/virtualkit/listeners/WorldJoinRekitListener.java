@@ -108,10 +108,9 @@ public class WorldJoinRekitListener implements Listener {
             return;
         }
 
-        // Look up configured slot for this world
-        int slot = plugin.getConfig().getInt("auto-rekit-on-world-join.worlds." + worldName, -1);
-        if (slot <= 0) {
-            // 0 or -1 means disabled for this world
+        // Get configured value (can be slot number or public kit name)
+        Object configVal = plugin.getConfig().get("auto-rekit-on-world-join.worlds." + worldName);
+        if (configVal == null) {
             return;
         }
 
@@ -127,7 +126,17 @@ public class WorldJoinRekitListener implements Listener {
                 return;
             }
 
-            KitManager.get().loadKitSilent(player, slot);
+            if (configVal instanceof Number) {
+                int slot = ((Number) configVal).intValue();
+                if (slot > 0 && slot <= 9) {
+                    KitManager.get().loadKitSilent(player, slot);
+                }
+            } else {
+                String kitId = configVal.toString();
+                if (!kitId.isEmpty() && !kitId.equals("0")) {
+                    KitManager.get().loadPublicKitSilent(player, kitId);
+                }
+            }
 
         }, delayTicks);
     }
