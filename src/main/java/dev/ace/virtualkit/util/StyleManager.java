@@ -48,6 +48,16 @@ public class StyleManager {
     }
 
     /**
+     * Preprocesses text to convert hex color codes in the format &#RRGGBB to <#RRGGBB>.
+     */
+    public static String parseHex(String text) {
+        if (text == null) {
+            return null;
+        }
+        return text.replaceAll("&#([A-Fa-f0-9]{6})", "<#$1>");
+    }
+
+    /**
      * Converts MiniMessage format to legacy color codes for GUI titles.
      * Supports hex colors like <#00FF00> and named colors like <green>.
      */
@@ -55,8 +65,9 @@ public class StyleManager {
         if (miniMessageText == null || miniMessageText.isEmpty()) {
             return "\u00A7a"; // Default lime (section symbol + a)
         }
+        String processed = parseHex(miniMessageText);
         try {
-            Component component = miniMessage.deserialize(miniMessageText + "X");
+            Component component = miniMessage.deserialize(processed + "X");
             String result = legacySerializer.serialize(component);
             // Remove the test character
             if (result.endsWith("X")) {
@@ -76,8 +87,9 @@ public class StyleManager {
         if (miniMessageText == null || miniMessageText.isEmpty()) {
             return "";
         }
+        String processed = parseHex(miniMessageText);
         try {
-            Component component = miniMessage.deserialize(miniMessageText);
+            Component component = miniMessage.deserialize(processed);
             return legacySerializer.serialize(component);
         } catch (Exception e) {
             return miniMessageText;
@@ -105,8 +117,9 @@ public class StyleManager {
         if (miniMessageText == null || miniMessageText.isEmpty()) {
             return Component.empty();
         }
+        String processed = parseHex(miniMessageText);
         try {
-            return miniMessage.deserialize(miniMessageText);
+            return miniMessage.deserialize(processed);
         } catch (Exception e) {
             return Component.text(miniMessageText);
         }

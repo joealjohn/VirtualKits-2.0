@@ -34,9 +34,14 @@ redis:
   port: 6379
   password: "password"
 
-# Auto-backup (only for YML storage - creates backup in /backup folder on shutdown)
+# Auto-backup (creates a single zip file per run in the /backups folder)
 backup:
   enabled: true
+  # How often to create a backup (in minutes)
+  interval-minutes: 60
+  # How many backup zips to keep (oldest are deleted automatically)
+  max-backups: 5
+
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #                             ᴀᴘᴘᴇᴀʀᴀɴᴄᴇ
@@ -178,6 +183,25 @@ feature:
   send-update-message-on-join: false
   # Use old death drop behavior (pre-1.14)
   old-death-drops: false
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                      ᴀᴜᴛᴏ-ʀᴇᴋɪᴛ ᴏɴ ᴡᴏʀʟᴅ ᴊᴏɪɴ
+# ═══════════════════════════════════════════════════════════════════════════════
+# Automatically load a kit when a player joins/switches to a world.
+# Requires permission: virtualkit.autorekit (bypass with virtualkit.autorekit.bypass)
+auto-rekit-on-world-join:
+  enabled: false
+  # Only rekit if the player's inventory is empty (don't overwrite existing gear)
+  only-if-empty: false
+  # Tick delay after joining before the kit is applied (20 ticks = 1 second)
+  delay-ticks: 5
+  # Per-world kit slot mapping.
+  # Format:   <world-name>: <kit-slot-number>  (1-9)
+  # Use slot 0 to disable auto-rekit for a specific world.
+  worlds:
+    world: 1
+    world_nether: 1
+    # example_pvp_world: 2
 
 # Use display name instead of player name in broadcasts
 use-display-name: false

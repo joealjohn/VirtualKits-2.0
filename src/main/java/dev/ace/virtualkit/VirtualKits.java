@@ -27,6 +27,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.ipvp.canvas.MenuFunctionListener;
 
 import java.util.Collections;
+import java.util.UUID;
 
 public final class VirtualKits extends JavaPlugin {
 
@@ -172,7 +173,9 @@ public final class VirtualKits extends JavaPlugin {
         this.getCommand("virtualkit").setExecutor(new VirtualKitsCommand(this));
 
         Bukkit.getPluginManager().registerEvents(regearCommand, this);
-        Bukkit.getPluginManager().registerEvents(new JoinListener(this, updateChecker), this);
+        WorldJoinRekitListener worldJoinRekitListener = new WorldJoinRekitListener(this);
+        Bukkit.getPluginManager().registerEvents(worldJoinRekitListener, this);
+        Bukkit.getPluginManager().registerEvents(new JoinListener(this, updateChecker, worldJoinRekitListener), this);
         Bukkit.getPluginManager().registerEvents(new QuitListener(this), this);
         Bukkit.getPluginManager().registerEvents(new MenuFunctionListener(), this);
         Bukkit.getPluginManager().registerEvents(new KitMenuCloseListener(), this);
@@ -210,7 +213,18 @@ public final class VirtualKits extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Save all online players' kits to DB before shutting down
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            UUID uuid = player.getUniqueId();
+            KitManager.get().savePlayerKitsToDB(uuid);
+        });
+
         closeDatabaseConnection();
+
+        // Shut down BroadcastManager (closes BukkitAudiences)
+        if (BroadcastManager.get() != null) {
+            BroadcastManager.get().shutdown();
+        }
 
         // Shutdown backup manager if it exists
         if (backupManager != null) {

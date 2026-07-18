@@ -4,8 +4,8 @@ import dev.ace.virtualkit.KitManager;
 import dev.ace.virtualkit.UpdateChecker;
 import dev.ace.virtualkit.util.BroadcastManager;
 import dev.ace.virtualkit.util.MessageManager;
+import dev.ace.virtualkit.util.StyleManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,10 +22,12 @@ public class JoinListener implements Listener {
 
     private final Plugin plugin;
     private final UpdateChecker updateChecker;
+    private final WorldJoinRekitListener worldJoinRekitListener;
 
-    public JoinListener(Plugin plugin, UpdateChecker updateChecker) {
+    public JoinListener(Plugin plugin, UpdateChecker updateChecker, WorldJoinRekitListener worldJoinRekitListener) {
         this.plugin = plugin;
         this.updateChecker = updateChecker;
+        this.worldJoinRekitListener = worldJoinRekitListener;
     }
 
     @EventHandler
@@ -39,13 +41,18 @@ public class JoinListener implements Listener {
 
         UUID uuid = player.getUniqueId();
 
-        // KitManager.loadFromSQL(uuid);
-
         new BukkitRunnable() {
 
             @Override
             public void run() {
                 KitManager.get().loadPlayerDataFromDB(uuid);
+
+                // After DB load finishes, trigger auto-rekit on the main thread
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    if (player.isOnline()) {
+                        worldJoinRekitListener.applyAutoRekitOnJoin(player);
+                    }
+                });
             }
 
         }.runTaskAsynchronously(plugin);
@@ -54,7 +61,7 @@ public class JoinListener implements Listener {
         if (MessageManager.get().isMotdEnabled()) {
             List<Component> motdMessages = new ArrayList<>();
             MessageManager.get().getMotdMessages()
-                    .forEach(message -> motdMessages.add(MiniMessage.miniMessage().deserialize(message)));
+                    .forEach(message -> motdMessages.add(StyleManager.parseComponent(message)));
 
             // Delay for sending the MOTD
             Bukkit.getScheduler().runTaskLater(plugin,

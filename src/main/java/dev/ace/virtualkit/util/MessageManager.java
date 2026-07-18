@@ -55,8 +55,8 @@ public class MessageManager {
      * Sends a message to a player with the configured prefix
      */
     public void sendMessage(Player player, String message) {
-        Component prefixComponent = MiniMessage.miniMessage().deserialize(getPrefix());
-        Component messageComponent = MiniMessage.miniMessage().deserialize(message);
+        Component prefixComponent = StyleManager.parseComponent(getPrefix());
+        Component messageComponent = StyleManager.parseComponent(message);
         audience.player(player).sendMessage(prefixComponent.append(messageComponent));
     }
 
@@ -72,7 +72,7 @@ public class MessageManager {
      * Sends a raw message (without prefix) to a player
      */
     public void sendRawMessage(Player player, String message) {
-        Component messageComponent = MiniMessage.miniMessage().deserialize(message);
+        Component messageComponent = StyleManager.parseComponent(message);
         audience.player(player).sendMessage(messageComponent);
     }
 

@@ -36,6 +36,13 @@ permissions:
       virtualkit.repair: true
       virtualkit.rekitonrespawn: true
       virtualkit.rekitonkill: true
+      virtualkit.autorekit: true
+  virtualkit.autorekit:
+    description: Automatically receive kit when entering a configured world
+    default: true
+  virtualkit.autorekit.bypass:
+    description: Bypass automatic kit loading on world join
+    default: false
 
 
 commands:

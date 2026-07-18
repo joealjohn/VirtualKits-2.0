@@ -5,55 +5,54 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+/**
+ * Simplified backup system.
+ *
+ * <p>Creates a single {@code .zip} file per backup run containing all relevant
+ * data files (database.db, kits-data.yml, config.yml, etc.). Old zips are
+ * deleted automatically so only the configured number of backups is kept on disk.
+ *
+ * <p>Config keys (under {@code backup:}):
+ * <ul>
+ *   <li>{@code enabled}           – master toggle (default: true)</li>
+ *   <li>{@code interval-minutes}  – how often to back up (default: 60)</li>
+ *   <li>{@code max-backups}       – maximum zip files to keep (default: 5)</li>
+ * </ul>
+ */
 public class BackupManager {
 
     private static BackupManager instance;
     private final Plugin plugin;
     private final File backupDir;
     private final boolean enabled;
-    private BukkitTask hourlyTask;
-    private BukkitTask dailyTask;
-    private BukkitTask weeklyTask;
-    private BukkitTask monthlyTask;
-    private BukkitTask cleanupTask;
+    private final int intervalMinutes;
+    private final int maxBackups;
 
-    // Time constants
-    private static final long HOUR_IN_TICKS = 20 * 60 * 60; // 1 hour in ticks
-    private static final long DAY_IN_TICKS = HOUR_IN_TICKS * 24; // 1 day in ticks
-    private static final long WEEK_IN_TICKS = DAY_IN_TICKS * 7; // 1 week in ticks
-    private static final long MONTH_IN_TICKS = DAY_IN_TICKS * 30; // 1 month in ticks
+    private BukkitTask backupTask;
 
-    // Retention periods in milliseconds
-    private static final long HOURLY_RETENTION = TimeUnit.HOURS.toMillis(24); // 24 hours
-    private static final long DAILY_RETENTION = TimeUnit.DAYS.toMillis(7); // 7 days
-    private static final long WEEKLY_RETENTION = TimeUnit.DAYS.toMillis(30); // 30 days
-    private static final long MONTHLY_RETENTION = TimeUnit.DAYS.toMillis(365); // 365 days
-
-    // Filename patterns
-    private static final String HOURLY_PREFIX = "hourly_";
-    private static final String DAILY_PREFIX = "daily_";
-    private static final String WEEKLY_PREFIX = "weekly_";
-    private static final String MONTHLY_PREFIX = "monthly_";
+    private static final DateTimeFormatter TIMESTAMP_FMT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
 
     public BackupManager(Plugin plugin) {
         this.plugin = plugin;
-        this.enabled = plugin.getConfig().getBoolean("backup.enabled", true);
-        this.backupDir = new File(plugin.getDataFolder(), "backups");
+        this.enabled         = plugin.getConfig().getBoolean("backup.enabled", true);
+        this.intervalMinutes = plugin.getConfig().getInt("backup.interval-minutes", 60);
+        this.maxBackups      = plugin.getConfig().getInt("backup.max-backups", 5);
+        this.backupDir       = new File(plugin.getDataFolder(), "backups");
 
         if (enabled) {
-            initializeBackupDirectory();
-            scheduleBackups();
+            initDirectory();
+            scheduleBackup();
         }
 
         instance = this;
@@ -63,264 +62,140 @@ public class BackupManager {
         return instance;
     }
 
-    private void initializeBackupDirectory() {
-        if (!backupDir.exists()) {
-            if (backupDir.mkdirs()) {
-                plugin.getLogger().info("Created backup directory: " + backupDir.getAbsolutePath());
-            } else {
-                plugin.getLogger().warning("Failed to create backup directory: " + backupDir.getAbsolutePath());
-            }
-        }
-    }
-
-    private void scheduleBackups() {
-        plugin.getLogger().info("Scheduling automatic backups...");
-
-        // Schedule hourly backups (every hour)
-        hourlyTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                performBackup(HOURLY_PREFIX);
-            }
-        }.runTaskTimerAsynchronously(plugin, HOUR_IN_TICKS, HOUR_IN_TICKS);
-
-        // Schedule daily backups (every day)
-        dailyTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                performBackup(DAILY_PREFIX);
-            }
-        }.runTaskTimerAsynchronously(plugin, DAY_IN_TICKS, DAY_IN_TICKS);
-
-        // Schedule weekly backups (every week)
-        weeklyTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                performBackup(WEEKLY_PREFIX);
-            }
-        }.runTaskTimerAsynchronously(plugin, WEEK_IN_TICKS, WEEK_IN_TICKS);
-
-        // Schedule monthly backups (every month)
-        monthlyTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                performBackup(MONTHLY_PREFIX);
-            }
-        }.runTaskTimerAsynchronously(plugin, MONTH_IN_TICKS, MONTH_IN_TICKS);
-
-        // Schedule cleanup task (every 6 hours)
-        cleanupTask = new BukkitRunnable() {
-            @Override
-            public void run() {
-                cleanupOldBackups();
-            }
-        }.runTaskTimerAsynchronously(plugin, HOUR_IN_TICKS * 6, HOUR_IN_TICKS * 6);
-
-        plugin.getLogger().info("Automatic backups scheduled successfully");
-    }
-
-    /**
-     * Perform a backup of all file-based storage
-     * 
-     * @param prefix The prefix for the backup filename
-     */
-    public void performBackup(String prefix) {
-        if (!enabled) {
-            return;
-        }
-
-        try {
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
-
-            // Backup SQLite database
-            File sqliteFile = new File(plugin.getDataFolder(), "database.db");
-            if (sqliteFile.exists()) {
-                File backupFile = new File(backupDir, prefix + "database_" + timestamp + ".db");
-                Files.copy(sqliteFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                plugin.getLogger().info("Backed up SQLite database to: " + backupFile.getName());
-            }
-
-            // Backup YAML storage
-            File yamlFile = new File(plugin.getDataFolder(), "please-use-a-real-database.yml");
-            if (yamlFile.exists()) {
-                File backupFile = new File(backupDir, prefix + "yaml-storage_" + timestamp + ".yml");
-                Files.copy(yamlFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                plugin.getLogger().info("Backed up YAML storage to: " + backupFile.getName());
-            }
-
-            // Backup any other file-based storage files
-            backupAdditionalFiles(prefix, timestamp);
-
-        } catch (IOException e) {
-            plugin.getLogger().severe("Failed to perform backup: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Backup additional files that might be important for the plugin
-     * 
-     * @param prefix    The backup prefix
-     * @param timestamp The timestamp for the backup
-     */
-    private void backupAdditionalFiles(String prefix, String timestamp) throws IOException {
-        // Backup config.yml
-        File configFile = new File(plugin.getDataFolder(), "config.yml");
-        if (configFile.exists()) {
-            File backupFile = new File(backupDir, prefix + "config_" + timestamp + ".yml");
-            Files.copy(configFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        // Backup any WAL files (SQLite Write-Ahead Logging)
-        File walFile = new File(plugin.getDataFolder(), "database.db-wal");
-        if (walFile.exists()) {
-            File backupFile = new File(backupDir, prefix + "database-wal_" + timestamp + ".db");
-            Files.copy(walFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        // Backup any SHM files (SQLite Shared Memory)
-        File shmFile = new File(plugin.getDataFolder(), "database.db-shm");
-        if (shmFile.exists()) {
-            File backupFile = new File(backupDir, prefix + "database-shm_" + timestamp + ".db");
-            Files.copy(shmFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-    }
-
-    /**
-     * Clean up old backups according to retention policy
-     */
-    private void cleanupOldBackups() {
-        if (!enabled || !backupDir.exists()) {
-            return;
-        }
-
-        File[] backupFiles = backupDir.listFiles();
-        if (backupFiles == null) {
-            return;
-        }
-
-        long currentTime = System.currentTimeMillis();
-
-        // Sort files by last modified time (oldest first)
-        Arrays.sort(backupFiles, Comparator.comparing(File::lastModified));
-
-        for (File file : backupFiles) {
-            if (file.isFile()) {
-                long fileAge = currentTime - file.lastModified();
-                String fileName = file.getName();
-
-                boolean shouldDelete = false;
-
-                // Check retention policy based on prefix
-                if (fileName.startsWith(HOURLY_PREFIX) && fileAge > HOURLY_RETENTION) {
-                    shouldDelete = true;
-                } else if (fileName.startsWith(DAILY_PREFIX) && fileAge > DAILY_RETENTION) {
-                    shouldDelete = true;
-                } else if (fileName.startsWith(WEEKLY_PREFIX) && fileAge > WEEKLY_RETENTION) {
-                    shouldDelete = true;
-                } else if (fileName.startsWith(MONTHLY_PREFIX) && fileAge > MONTHLY_RETENTION) {
-                    shouldDelete = true;
-                }
-
-                if (shouldDelete) {
-                    if (file.delete()) {
-                        plugin.getLogger().info("Deleted old backup: " + fileName);
-                    } else {
-                        plugin.getLogger().warning("Failed to delete old backup: " + fileName);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Perform an immediate backup (can be called manually)
-     */
-    public void performManualBackup() {
-        if (!enabled) {
-            plugin.getLogger().warning("Backups are disabled in configuration");
-            return;
-        }
-
-        plugin.getLogger().info("Performing manual backup...");
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                performBackup("manual_");
-            }
-        }.runTaskAsynchronously(plugin);
-    }
-
-    /**
-     * Get the backup directory
-     * 
-     * @return The backup directory
-     */
-    public File getBackupDirectory() {
-        return backupDir;
-    }
-
-    /**
-     * Check if backups are enabled
-     * 
-     * @return True if backups are enabled
-     */
     public boolean isEnabled() {
         return enabled;
     }
 
+    public File getBackupDirectory() {
+        return backupDir;
+    }
+
+    // ─── Scheduling ─────────────────────────────────────────────────────────────
+
+    private void initDirectory() {
+        if (!backupDir.exists() && !backupDir.mkdirs()) {
+            plugin.getLogger().warning("[Backup] Could not create backup directory: "
+                    + backupDir.getAbsolutePath());
+        }
+    }
+
+    private void scheduleBackup() {
+        long intervalTicks = intervalMinutes * 60L * 20L;
+        backupTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                runBackup();
+            }
+        }.runTaskTimerAsynchronously(plugin, intervalTicks, intervalTicks);
+
+        plugin.getLogger().info("[Backup] Scheduled every " + intervalMinutes
+                + " min, keeping last " + maxBackups + " backup(s).");
+    }
+
+    // ─── Core backup logic ───────────────────────────────────────────────────────
+
     /**
-     * Get backup statistics
-     * 
-     * @return Array containing [hourly, daily, weekly, monthly] backup counts
+     * Runs a backup immediately (async-safe – call from an async thread or use
+     * {@link #performManualBackup()} to schedule it).
      */
-    public int[] getBackupCounts() {
-        if (!backupDir.exists()) {
-            return new int[] { 0, 0, 0, 0 };
+    public void runBackup() {
+        if (!enabled) return;
+
+        String timestamp = LocalDateTime.now().format(TIMESTAMP_FMT);
+        File zipFile = new File(backupDir, "backup_" + timestamp + ".zip");
+
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
+
+            // Files to include in the zip
+            zipIfExists(zos, "database.db");
+            zipIfExists(zos, "database.db-wal");
+            zipIfExists(zos, "database.db-shm");
+            zipIfExists(zos, "kits-data.yml");
+            zipIfExists(zos, "please-use-a-real-database.yml"); // legacy name
+            zipIfExists(zos, "config.yml");
+            zipIfExists(zos, "messages.yml");
+
+        } catch (IOException e) {
+            plugin.getLogger().severe("[Backup] Failed to create backup zip: " + e.getMessage());
+            // Clean up an incomplete zip
+            if (zipFile.exists()) zipFile.delete();
+            return;
         }
 
-        File[] files = backupDir.listFiles();
-        if (files == null) {
-            return new int[] { 0, 0, 0, 0 };
+        plugin.getLogger().info("[Backup] Created: " + zipFile.getName());
+        pruneOldBackups();
+    }
+
+    /** Add a file from the plugin data folder into the zip, if it exists. */
+    private void zipIfExists(ZipOutputStream zos, String filename) throws IOException {
+        File file = new File(plugin.getDataFolder(), filename);
+        if (!file.exists() || !file.isFile()) return;
+
+        try (FileInputStream fis = new FileInputStream(file)) {
+            zos.putNextEntry(new ZipEntry(filename));
+            byte[] buf = new byte[8192];
+            int len;
+            while ((len = fis.read(buf)) > 0) {
+                zos.write(buf, 0, len);
+            }
+            zos.closeEntry();
         }
+    }
 
-        int hourly = 0, daily = 0, weekly = 0, monthly = 0;
+    /** Delete the oldest backup zips so only {@code maxBackups} remain. */
+    private void pruneOldBackups() {
+        File[] zips = backupDir.listFiles(
+                f -> f.isFile() && f.getName().startsWith("backup_") && f.getName().endsWith(".zip"));
 
-        for (File file : files) {
-            if (file.isFile()) {
-                String name = file.getName();
-                if (name.startsWith(HOURLY_PREFIX))
-                    hourly++;
-                else if (name.startsWith(DAILY_PREFIX))
-                    daily++;
-                else if (name.startsWith(WEEKLY_PREFIX))
-                    weekly++;
-                else if (name.startsWith(MONTHLY_PREFIX))
-                    monthly++;
+        if (zips == null || zips.length <= maxBackups) return;
+
+        // Sort oldest-first
+        Arrays.sort(zips, Comparator.comparingLong(File::lastModified));
+
+        int toDelete = zips.length - maxBackups;
+        int deleted = 0;
+        for (int i = 0; i < toDelete; i++) {
+            if (zips[i].delete()) {
+                deleted++;
+            } else {
+                plugin.getLogger().warning("[Backup] Could not delete old backup: " + zips[i].getName());
             }
         }
 
-        return new int[] { hourly, daily, weekly, monthly };
-    }
-
-    /**
-     * Shutdown the backup manager and cancel all scheduled tasks
-     */
-    public void shutdown() {
-        if (hourlyTask != null)
-            hourlyTask.cancel();
-        if (dailyTask != null)
-            dailyTask.cancel();
-        if (weeklyTask != null)
-            weeklyTask.cancel();
-        if (monthlyTask != null)
-            monthlyTask.cancel();
-        if (cleanupTask != null)
-            cleanupTask.cancel();
-
-        if (enabled) {
-            plugin.getLogger().info("Backup manager shutdown complete");
+        if (deleted > 0) {
+            plugin.getLogger().info("[Backup] Pruned " + deleted
+                    + " old backup(s) (keeping " + maxBackups + ").");
         }
     }
-}
 
+    // ─── Public API ──────────────────────────────────────────────────────────────
+
+    /** Trigger an immediate backup from any thread. */
+    public void performManualBackup() {
+        if (!enabled) {
+            plugin.getLogger().warning("[Backup] Backups are disabled in config.");
+            return;
+        }
+        plugin.getLogger().info("[Backup] Manual backup triggered...");
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                runBackup();
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
+    /** Returns the number of backup zip files currently stored. */
+    public int getBackupCount() {
+        if (!backupDir.exists()) return 0;
+        File[] zips = backupDir.listFiles(
+                f -> f.isFile() && f.getName().startsWith("backup_") && f.getName().endsWith(".zip"));
+        return zips == null ? 0 : zips.length;
+    }
+
+    /** Cancel scheduled tasks on plugin disable. */
+    public void shutdown() {
+        if (backupTask != null) backupTask.cancel();
+        if (enabled) plugin.getLogger().info("[Backup] Shutdown complete.");
+    }
+}

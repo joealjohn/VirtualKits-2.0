@@ -8,17 +8,24 @@ import java.util.UUID;
 public class CooldownManager {
 
     private final long cooldownInSeconds;
-    private final HashMap<String,Long> cooldownMap;
+    private final HashMap<String, Long> cooldownMap;
 
     public CooldownManager(long cooldownInSeconds) {
         this.cooldownInSeconds = cooldownInSeconds;
         this.cooldownMap = new HashMap<>();
     }
 
-    //check cooldown
+    // ─── Check ──────────────────────────────────────────────────────────────────
+
     public boolean isOnCooldown(String key) {
-        if (!cooldownMap.containsKey(key)) return false;
-        return System.currentTimeMillis() - cooldownMap.get(key) < cooldownInSeconds * 1000;
+        Long stamp = cooldownMap.get(key);
+        if (stamp == null) return false;
+        if (System.currentTimeMillis() - stamp >= cooldownInSeconds * 1000L) {
+            // Expired – evict now so the map never accumulates stale entries
+            cooldownMap.remove(key);
+            return false;
+        }
+        return true;
     }
 
     public boolean isOnCooldown(UUID uuid) {
@@ -29,8 +36,8 @@ public class CooldownManager {
         return isOnCooldown(player.getUniqueId());
     }
 
+    // ─── Set ────────────────────────────────────────────────────────────────────
 
-    //set cooldown
     public void setCooldown(String key) {
         cooldownMap.put(key, System.currentTimeMillis());
     }
@@ -43,9 +50,27 @@ public class CooldownManager {
         setCooldown(player.getUniqueId());
     }
 
-    //get time left in seconds
+    // ─── Remove (call on player quit) ───────────────────────────────────────────
+
+    public void remove(String key) {
+        cooldownMap.remove(key);
+    }
+
+    public void remove(UUID uuid) {
+        cooldownMap.remove(uuid.toString());
+    }
+
+    public void remove(Player player) {
+        remove(player.getUniqueId());
+    }
+
+    // ─── Time left ──────────────────────────────────────────────────────────────
+
     public int getTimeLeft(String key) {
-        return (int) (cooldownInSeconds - (System.currentTimeMillis() - cooldownMap.get(key)) / 1000);
+        Long stamp = cooldownMap.get(key);
+        if (stamp == null) return 0;
+        long remaining = cooldownInSeconds - (System.currentTimeMillis() - stamp) / 1000L;
+        return (int) Math.max(0, remaining);
     }
 
     public int getTimeLeft(UUID uuid) {
@@ -55,8 +80,4 @@ public class CooldownManager {
     public int getTimeLeft(Player player) {
         return getTimeLeft(player.getUniqueId());
     }
-
-
-
 }
-

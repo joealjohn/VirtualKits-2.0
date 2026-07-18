@@ -27,8 +27,7 @@ public class BroadcastManager {
     public BroadcastManager(Plugin plugin) {
         this.plugin = plugin;
         audience = BukkitAudiences.create(plugin);
-        prefix = MiniMessage.miniMessage()
-                .deserialize(plugin.getConfig().getString("prefix", "<gray>[<aqua>Kits</aqua>]</gray> "));
+        prefix = StyleManager.parseComponent(plugin.getConfig().getString("prefix", "<gray>[<aqua>Kits</aqua>]</gray> "));
         instance = this;
     }
 
@@ -49,7 +48,7 @@ public class BroadcastManager {
         String formattedMessage = strikeThroughLine + "\n\n" + " ".repeat(3) + FIGURE_SPACE.repeat(Math.max(padding, 0))
                 + message + "\n\n" + strikeThroughLine;
 
-        return MiniMessage.miniMessage().deserialize(formattedMessage);
+        return StyleManager.parseComponent(formattedMessage);
     }
 
     private boolean isKitLoadingMessage(MessageKey key) {
@@ -66,8 +65,8 @@ public class BroadcastManager {
         }
 
         // Get prefix from MessageManager
-        Component prefixComponent = MiniMessage.miniMessage().deserialize(MessageManager.get().getPrefix());
-        Component messageComponent = MiniMessage.miniMessage().deserialize(message);
+        Component prefixComponent = StyleManager.parseComponent(MessageManager.get().getPrefix());
+        Component messageComponent = StyleManager.parseComponent(message);
 
         for (Player broadcastPlayer : world.getPlayers()) {
             if (broadcastPlayer.getLocation().distance(player.getLocation()) < broadcastDistance) {
@@ -193,6 +192,13 @@ public class BroadcastManager {
 
     public void sendComponentMessage(Player player, Component message) {
         audience.player(player).sendMessage(message);
+    }
+
+    /**
+     * Close the underlying BukkitAudiences to free resources on plugin disable.
+     */
+    public void shutdown() {
+        audience.close();
     }
 
     public enum MessageKey {

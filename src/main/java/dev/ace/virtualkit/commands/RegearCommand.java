@@ -6,7 +6,6 @@ import dev.ace.virtualkit.util.BroadcastManager;
 import dev.ace.virtualkit.util.CooldownManager;
 import dev.ace.virtualkit.util.DisabledCommand;
 import dev.ace.virtualkit.util.StyleManager;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -77,12 +76,12 @@ public class RegearCommand implements CommandExecutor, Listener {
         if (effectiveMode.equalsIgnoreCase("shulker")) {
             int slot = player.getInventory().firstEmpty();
             if (slot == -1) {
-                BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<red>Your inventory is full, can't give you a regear shulker!"));
+                BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<red>Your inventory is full, can't give you a regear shulker!"));
                 return true;
             }
 
             player.getInventory().setItem(slot, REGEAR_SHULKER_ITEM);
-            BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<green>Regear Shulker given!"));
+            BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<green>Regear Shulker given!"));
 
             return true;
         }
@@ -91,29 +90,29 @@ public class RegearCommand implements CommandExecutor, Listener {
             int slot = KitManager.get().getLastKitLoaded(player.getUniqueId());
 
             if (slot == -1) {
-                BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<red>You have not loaded a kit yet!"));
+                BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<red>You have not loaded a kit yet!"));
                 return true;
             }
 
             if (!allowRegearWhileUsingElytra && player.isGliding() && player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getType() == Material.ELYTRA) {
-                BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<red>You cannot regear while using an elytra!"));
+                BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<red>You cannot regear while using an elytra!"));
                 return true;
             }
 
             if (damageCooldownManager.isOnCooldown(player)) {
                 int secondsLeft = damageCooldownManager.getTimeLeft(player);
-                BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<red>You must be out of combat for " + secondsLeft + " more seconds before regearing!"));
+                BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<red>You must be out of combat for " + secondsLeft + " more seconds before regearing!"));
                 return true;
             }
 
             if (commandCooldownManager.isOnCooldown(player)) {
                 int secondsLeft = commandCooldownManager.getTimeLeft(player);
-                BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<red>You must wait " + secondsLeft + " seconds before using this command again!"));
+                BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<red>You must wait " + secondsLeft + " seconds before using this command again!"));
                 return true;
             }
 
             KitManager.get().regearKit(player, slot);
-            BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<green>Regeared!"));
+            BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<green>Regeared!"));
             BroadcastManager.get().broadcastPlayerRegeared(player);
 
             commandCooldownManager.setCooldown(player);
@@ -121,7 +120,7 @@ public class RegearCommand implements CommandExecutor, Listener {
             return true;
         }
 
-        BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<red>This command is not configured correctly, please contact an administrator."));
+        BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<red>This command is not configured correctly, please contact an administrator."));
         return true;
     }
 
@@ -136,13 +135,13 @@ public class RegearCommand implements CommandExecutor, Listener {
         int slot = KitManager.get().getLastKitLoaded(player.getUniqueId());
 
         if (slot == -1) {
-            BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<red>You have not loaded a kit yet!"));
+            BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<red>You have not loaded a kit yet!"));
             return;
         }
 
         if (damageCooldownManager.isOnCooldown(player)) {
             int secondsLeft = damageCooldownManager.getTimeLeft(player);
-            BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<red>You must be out of combat for " + secondsLeft + " more seconds before regearing!"));
+            BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<red>You must be out of combat for " + secondsLeft + " more seconds before regearing!"));
             return;
         }
 
@@ -178,13 +177,13 @@ public class RegearCommand implements CommandExecutor, Listener {
         int slot = KitManager.get().getLastKitLoaded(player.getUniqueId());
 
         if (slot == -1) {
-            BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<red>You have not loaded a kit yet!"));
+            BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<red>You have not loaded a kit yet!"));
             return;
         }
 
         if (damageCooldownManager.isOnCooldown(player)) {
             int secondsLeft = damageCooldownManager.getTimeLeft(player);
-            BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<red>You must be out of combat for " + secondsLeft + " more seconds before regearing!"));
+            BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<red>You must be out of combat for " + secondsLeft + " more seconds before regearing!"));
             return;
         }
 
@@ -193,7 +192,7 @@ public class RegearCommand implements CommandExecutor, Listener {
         KitManager.get().regearKit(player, slot);
         player.updateInventory();
 
-        BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize("<green>Regeared!"));
+        BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent("<green>Regeared!"));
         BroadcastManager.get().broadcastPlayerRegeared(player);
     }
 

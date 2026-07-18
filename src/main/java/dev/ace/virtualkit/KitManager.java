@@ -432,6 +432,24 @@ public class KitManager {
         }
     }
 
+    /**
+     * Remove all in-memory kit and EC data for a player.
+     * Call this after savePlayerKitsToDB on quit to prevent unbounded memory growth.
+     */
+    public void evictPlayerData(UUID uuid) {
+        for (int i = 1; i < 10; i++) {
+            kitByKitIDMap.remove(IDUtil.getPlayerKitId(uuid, i));
+            kitByKitIDMap.remove(IDUtil.getECId(uuid, i));
+        }
+    }
+
+    /**
+     * Remove the last-kit-used record for a player (call on quit).
+     */
+    public void clearLastKitUsed(UUID uuid) {
+        lastKitUsedByPlayer.remove(uuid);
+    }
+
     public void savePlayerKitToDB(UUID uuid, int slot) {
         saveKitToDB(IDUtil.getPlayerKitId(uuid, slot), false);
     }

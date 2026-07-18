@@ -135,139 +135,100 @@ public class KitMenuCloseListener implements Listener {
     @EventHandler
     public void onInspectKitEditorClose(InventoryCloseEvent e) {
         Inventory inv = e.getInventory();
-        if (inv.getSize() == 54) {
-            if (inv.getLocation() == null) {
-                InventoryView view = e.getView();
-                if (view.getTitle().contains(StyleManager.get().getPrimaryColor() + "Inspecting ")
-                        && view.getTitle().contains("'s kit ")) {
-                    Player p = (Player) e.getPlayer();
-                    if (!p.hasPermission("VirtualKits.admin")) {
-                        return;
-                    }
-                    String title = view.getTitle();
-                    String[] parts = title.replace(StyleManager.get().getPrimaryColor() + "Inspecting ", "")
-                            .split("'s kit ");
-                    if (parts.length != 2) {
-                        return;
-                    }
-                    String playerName = parts[0];
-                    int slot;
-                    try {
-                        slot = Integer.parseInt(parts[1]);
-                    } catch (NumberFormatException ex) {
-                        return;
-                    }
+        if (inv.getSize() != 54) return;
+        if (inv.getLocation() != null) return;
 
-                    UUID targetUuid = null;
-                    for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-                        if (playerName.equalsIgnoreCase(offlinePlayer.getName())) {
-                            targetUuid = offlinePlayer.getUniqueId();
-                            break;
-                        }
-                    }
-                    if (targetUuid == null) {
-                        Player onlinePlayer = Bukkit.getPlayerExact(playerName);
-                        if (onlinePlayer != null) {
-                            targetUuid = onlinePlayer.getUniqueId();
-                        }
-                    }
-                    if (targetUuid == null) {
-                        p.sendMessage(ChatColor.RED + "Could not find player " + playerName);
-                        return;
-                    }
+        InventoryView view = e.getView();
+        String title = view.getTitle();
+        String primary = StyleManager.get().getPrimaryColor();
 
-                    if (GUI.removeKitDeletionFlag(p)) {
-                        return;
-                    }
+        // New title format: "<primary>Inspect:kit:<uuid>:<slot>"
+        if (!title.startsWith(primary + "Inspect:kit:")) return;
 
-                    ItemStack[] kit = new ItemStack[41];
-                    ItemStack[] chestitems = e.getInventory().getContents();
+        String payload = title.substring((primary + "Inspect:kit:").length()); // "<uuid>:<slot>"
+        int lastColon = payload.lastIndexOf(':');
+        if (lastColon < 0) return;
 
-                    for (int i = 0; i < 41; i++) {
-                        if (chestitems[i] == null) {
-                            kit[i] = null;
-                        } else {
-                            kit[i] = chestitems[i].clone();
-                        }
-                    }
+        UUID targetUuid;
+        int slot;
+        try {
+            targetUuid = UUID.fromString(payload.substring(0, lastColon));
+            slot = Integer.parseInt(payload.substring(lastColon + 1));
+        } catch (IllegalArgumentException ex) {
+            return;
+        }
 
-                    if (KitManager.get().savekit(targetUuid, slot, kit, true)) {
-                        p.sendMessage(ChatColor.GREEN + "Kit " + slot + " updated for player " + playerName + "!");
-                    } else {
-                        p.sendMessage(ChatColor.RED + "Failed to update kit for player " + playerName + "!");
-                    }
-                }
-            }
+        Player p = (Player) e.getPlayer();
+        if (!p.hasPermission("VirtualKits.admin")) return;
+
+        if (GUI.removeKitDeletionFlag(p)) return;
+
+        ItemStack[] kit = new ItemStack[41];
+        ItemStack[] chestItems = e.getInventory().getContents();
+        for (int i = 0; i < 41; i++) {
+            kit[i] = chestItems[i] == null ? null : chestItems[i].clone();
+        }
+
+        String targetName = getPlayerName(targetUuid);
+        if (KitManager.get().savekit(targetUuid, slot, kit, true)) {
+            p.sendMessage(ChatColor.GREEN + "Kit " + slot + " updated for player " + targetName + "!");
+        } else {
+            p.sendMessage(ChatColor.RED + "Failed to update kit for player " + targetName + "!");
         }
     }
 
     @EventHandler
     public void onInspectEnderchestEditorClose(InventoryCloseEvent e) {
         Inventory inv = e.getInventory();
-        if (inv.getSize() == 54) {
-            if (inv.getLocation() == null) {
-                InventoryView view = e.getView();
-                if (view.getTitle().contains(StyleManager.get().getPrimaryColor() + "Inspecting ")
-                        && view.getTitle().contains("'s enderchest ")) {
-                    Player p = (Player) e.getPlayer();
-                    if (!p.hasPermission("VirtualKits.admin")) {
-                        return;
-                    }
-                    String title = view.getTitle();
-                    String[] parts = title.replace(StyleManager.get().getPrimaryColor() + "Inspecting ", "")
-                            .split("'s enderchest ");
-                    if (parts.length != 2) {
-                        return;
-                    }
-                    String playerName = parts[0];
-                    int slot;
-                    try {
-                        slot = Integer.parseInt(parts[1]);
-                    } catch (NumberFormatException ex) {
-                        return;
-                    }
+        if (inv.getSize() != 54) return;
+        if (inv.getLocation() != null) return;
 
-                    UUID targetUuid = null;
-                    for (OfflinePlayer offlinePlayer : Bukkit.getOfflinePlayers()) {
-                        if (playerName.equalsIgnoreCase(offlinePlayer.getName())) {
-                            targetUuid = offlinePlayer.getUniqueId();
-                            break;
-                        }
-                    }
-                    if (targetUuid == null) {
-                        Player onlinePlayer = Bukkit.getPlayerExact(playerName);
-                        if (onlinePlayer != null) {
-                            targetUuid = onlinePlayer.getUniqueId();
-                        }
-                    }
-                    if (targetUuid == null) {
-                        p.sendMessage(ChatColor.RED + "Could not find player " + playerName);
-                        return;
-                    }
+        InventoryView view = e.getView();
+        String title = view.getTitle();
+        String primary = StyleManager.get().getPrimaryColor();
 
-                    if (GUI.removeKitDeletionFlag(p)) {
-                        return;
-                    }
+        // New title format: "<primary>Inspect:ec:<uuid>:<slot>"
+        if (!title.startsWith(primary + "Inspect:ec:")) return;
 
-                    ItemStack[] kit = new ItemStack[27];
-                    ItemStack[] chestitems = e.getInventory().getContents();
+        String payload = title.substring((primary + "Inspect:ec:").length());
+        int lastColon = payload.lastIndexOf(':');
+        if (lastColon < 0) return;
 
-                    for (int i = 0; i < 27; i++) {
-                        if (chestitems[i + 9] == null) {
-                            kit[i] = null;
-                        } else {
-                            kit[i] = chestitems[i + 9].clone();
-                        }
-                    }
-
-                    if (KitManager.get().saveEC(targetUuid, slot, kit)) {
-                        p.sendMessage(
-                                ChatColor.GREEN + "Enderchest " + slot + " updated for player " + playerName + "!");
-                    } else {
-                        p.sendMessage(ChatColor.RED + "Failed to update enderchest for player " + playerName + "!");
-                    }
-                }
-            }
+        UUID targetUuid;
+        int slot;
+        try {
+            targetUuid = UUID.fromString(payload.substring(0, lastColon));
+            slot = Integer.parseInt(payload.substring(lastColon + 1));
+        } catch (IllegalArgumentException ex) {
+            return;
         }
+
+        Player p = (Player) e.getPlayer();
+        if (!p.hasPermission("VirtualKits.admin")) return;
+
+        if (GUI.removeKitDeletionFlag(p)) return;
+
+        ItemStack[] kit = new ItemStack[27];
+        ItemStack[] chestItems = e.getInventory().getContents();
+        for (int i = 0; i < 27; i++) {
+            kit[i] = chestItems[i + 9] == null ? null : chestItems[i + 9].clone();
+        }
+
+        String targetName = getPlayerName(targetUuid);
+        if (KitManager.get().saveEC(targetUuid, slot, kit)) {
+            p.sendMessage(ChatColor.GREEN + "Enderchest " + slot + " updated for player " + targetName + "!");
+        } else {
+            p.sendMessage(ChatColor.RED + "Failed to update enderchest for player " + targetName + "!");
+        }
+    }
+
+    /** Resolve display name for a UUID — online first, then offline cache, then UUID string. */
+    private String getPlayerName(UUID uuid) {
+        Player online = Bukkit.getPlayer(uuid);
+        if (online != null) return online.getName();
+        // getOfflinePlayer(uuid) never makes a network call — it just reads the cache
+        OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
+        String name = op.getName();
+        return name != null ? name : uuid.toString();
     }
 }

@@ -117,7 +117,7 @@ public class ECCooldownManager implements Listener {
     public void sendCooldownMessage(Player player) {
         int remaining = getRemainingCooldown(player.getUniqueId());
         String message = getCooldownMessage().replace("%time%", String.valueOf(remaining));
-        BroadcastManager.get().sendComponentMessage(player, MiniMessage.miniMessage().deserialize(message));
+        BroadcastManager.get().sendComponentMessage(player, StyleManager.parseComponent(message));
     }
 
     /**

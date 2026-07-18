@@ -125,6 +125,27 @@ feature:
   set-health-on-kit-load: false
 ```
 
+### 🔄 Auto-Rekit on World Join & RTP
+
+Automatically load a kit slot when players enter a specific world (either via cross-world teleports/portals or when using RTP commands within the same world).
+
+```yaml
+auto-rekit-on-world-join:
+  enabled: true
+  # Only rekit if the player's inventory is empty (prevents overwriting current gear)
+  only-if-empty: false
+  # Delay (in ticks) before applying the kit (20 ticks = 1 second)
+  delay-ticks: 5
+  # World-to-kit-slot mapping
+  worlds:
+    world: 1
+    rtp_plains: 1
+    rtp_desert: 1
+```
+- **Permissions:**
+  - `virtualkit.autorekit` — Player receives auto-rekits (defaults to true).
+  - `virtualkit.autorekit.bypass` — Players bypass auto-rekits (defaults to false).
+
 ### Enderchest Cooldowns
 
 ```yaml
@@ -134,7 +155,28 @@ ec-cooldown:
   reset-on-kill: true     # Reset cooldown on kill
 ```
 
+### 💾 Simplified Backups (Single-Zip)
+
+We replaced the complex multi-tier backup system with a modern, simple zip backup setup. Every run creates a single `.zip` file containing all configuration, messages, database, and YAML storage files.
+
+```yaml
+backup:
+  enabled: true
+  # How often to create a backup (in minutes)
+  interval-minutes: 60
+  # How many backup zips to keep (old ones are auto-deleted)
+  max-backups: 5
+```
+
+### 🌐 Offline & Cracked Server Support
+
+VirtualKit 2.0 fully supports cracked/offline servers:
+- **Direct UUID GUI Encoding:** Solves database saving issues for offline players by encoding UUIDs directly in GUI titles instead of resolving names on inventory close.
+- **Asynchronous & Cached Resolution:** Eliminates lag spikes on server thread by avoiding synchronous player list scans.
+- **Deterministic Offline UUIDs:** Uses Bukkit's exact offline UUID generation formula so `/inspectkit` and `/inspectec` resolve offline players instantly even if they have never logged in before.
+
 ---
+
 
 ## 🔐 Permissions
 

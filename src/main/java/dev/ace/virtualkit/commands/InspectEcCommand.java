@@ -4,6 +4,7 @@ import dev.ace.virtualkit.KitManager;
 import dev.ace.virtualkit.gui.GUI;
 import dev.ace.virtualkit.util.BroadcastManager;
 import dev.ace.virtualkit.util.SoundManager;
+import dev.ace.virtualkit.util.StyleManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -36,14 +37,14 @@ public class InspectEcCommand implements CommandExecutor, TabCompleter {
                              @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(ERROR_PREFIX.append(
-                    mm.deserialize("<red>This command can only be executed by players.</red>")).toString());
+                    StyleManager.parseComponent("<red>This command can only be executed by players.</red>")).toString());
             return true;
         }
 
         if (!player.hasPermission("VirtualKits.inspect")) {
             BroadcastManager.get().sendComponentMessage(player,
                     ERROR_PREFIX.append(
-                            mm.deserialize("<red>You don't have permission to use this command.</red>")));
+                            StyleManager.parseComponent("<red>You don't have permission to use this command.</red>")));
             SoundManager.playFailure(player);
             return true;
         }
@@ -63,7 +64,7 @@ public class InspectEcCommand implements CommandExecutor, TabCompleter {
         } catch (NumberFormatException e) {
             BroadcastManager.get().sendComponentMessage(player,
                     ERROR_PREFIX.append(
-                            mm.deserialize("<red>Slot must be a number between " +
+                            StyleManager.parseComponent("<red>Slot must be a number between " +
                                     MIN_SLOT + " and " + MAX_SLOT + ".</red>")));
             SoundManager.playFailure(player);
             return true;
@@ -77,7 +78,7 @@ public class InspectEcCommand implements CommandExecutor, TabCompleter {
                         Bukkit.getScheduler().runTask(plugin, () -> {
                             BroadcastManager.get().sendComponentMessage(player,
                                     ERROR_PREFIX.append(
-                                            mm.deserialize("<red>Could not find a player with that name or UUID.</red>")));
+                                            StyleManager.parseComponent("<red>Could not find a player with that name or UUID.</red>")));
                             SoundManager.playFailure(player);
                         });
                         return CompletableFuture.completedFuture(null);
@@ -103,7 +104,7 @@ public class InspectEcCommand implements CommandExecutor, TabCompleter {
 
                                 BroadcastManager.get().sendComponentMessage(player,
                                         ERROR_PREFIX.append(
-                                                mm.deserialize("<red>" + targetName +
+                                                StyleManager.parseComponent("<red>" + targetName +
                                                         " does not have an enderchest in slot " + slot + "</red>")));
                                 SoundManager.playFailure(player);
                             }
@@ -117,7 +118,7 @@ public class InspectEcCommand implements CommandExecutor, TabCompleter {
                 plugin.getLogger().severe("Error loading enderchest data: " + ex.getMessage());
                 BroadcastManager.get().sendComponentMessage(player,
                         ERROR_PREFIX.append(
-                                mm.deserialize("<red>An error occurred while loading enderchest data. " +
+                                StyleManager.parseComponent("<red>An error occurred while loading enderchest data. " +
                                         "See console for details.</red>")));
                 SoundManager.playFailure(player);
             });

@@ -192,7 +192,7 @@ public class GUI {
 
     public void InspectKit(Player p, UUID target, int slot) {
         String playerName = getPlayerName(target);
-        Menu menu = createInspectMenu(slot, playerName);
+        Menu menu = createInspectMenu(slot, target); // embed UUID in title
 
         if (KitManager.get().hasKit(target, slot)) {
             ItemStack[] kit = KitManager.get().getItemStackArrayById(target.toString() + slot);
@@ -237,8 +237,7 @@ public class GUI {
     }
 
     public void InspectEc(Player p, UUID target, int slot) {
-        String playerName = getPlayerName(target);
-        Menu menu = createInspectEcMenu(slot, playerName);
+        Menu menu = createInspectEcMenu(slot, target); // embed UUID in title
 
         for (int i = 0; i < 9; i++) {
             menu.getSlot(i).setItem(ItemUtil.createGlassPane());
@@ -898,14 +897,23 @@ public class GUI {
         return ChestMenu.builder(6).title(StyleManager.get().getPrimaryColor() + "Ender Chest: " + slot).build();
     }
 
-    public Menu createInspectMenu(int slot, String playerName) {
+    /**
+     * Encodes slot + target UUID in title so we can recover UUID on menu close
+     * without any player name lookups (works on offline/cracked servers).
+     */
+    public Menu createInspectMenu(int slot, UUID targetUuid) {
         return ChestMenu.builder(6)
-                .title(StyleManager.get().getPrimaryColor() + "Inspecting " + playerName + "'s Kit " + slot).build();
+                .title(StyleManager.get().getPrimaryColor() + "Inspect:kit:" + targetUuid + ":" + slot)
+                .build();
     }
 
-    public Menu createInspectEcMenu(int slot, String playerName) {
+    /**
+     * Encodes slot + target UUID in title so we can recover UUID on menu close
+     * without any player name lookups (works on offline/cracked servers).
+     */
+    public Menu createInspectEcMenu(int slot, UUID targetUuid) {
         return ChestMenu.builder(6)
-                .title(StyleManager.get().getPrimaryColor() + "Inspecting " + playerName + "'s Ender Chest " + slot)
+                .title(StyleManager.get().getPrimaryColor() + "Inspect:ec:" + targetUuid + ":" + slot)
                 .build();
     }
 
