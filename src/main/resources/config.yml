@@ -190,7 +190,7 @@ feature:
 # Automatically load a kit when a player joins/switches to a world.
 # Requires permission: virtualkit.autorekit (bypass with virtualkit.autorekit.bypass)
 auto-rekit-on-world-join:
-  enabled: false
+  enabled: true
   # Only rekit if the player's inventory is empty (don't overwrite existing gear)
   only-if-empty: false
   # Tick delay after joining before the kit is applied (20 ticks = 1 second)

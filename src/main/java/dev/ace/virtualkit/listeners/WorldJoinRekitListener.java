@@ -89,22 +89,28 @@ public class WorldJoinRekitListener implements Listener {
     }
 
     private void applyAutoRekit(Player player, String worldName) {
+        plugin.getLogger().info("[VK-Debug] applyAutoRekit triggered for player: " + player.getName() + " in world: " + worldName);
+
         if (!plugin.getConfig().getBoolean("auto-rekit-on-world-join.enabled", false)) {
+            plugin.getLogger().info("[VK-Debug] Auto-rekit skipped: enabled is false in config");
             return;
         }
 
         // Respect the global disabled-command-worlds blacklist
         if (plugin.getConfig().getStringList("disabled-command-worlds").contains(worldName)) {
+            plugin.getLogger().info("[VK-Debug] Auto-rekit skipped: world is in disabled-command-worlds");
             return;
         }
 
         // Permission check – player must have the receive permission
         if (!player.hasPermission("virtualkit.autorekit")) {
+            plugin.getLogger().info("[VK-Debug] Auto-rekit skipped: player lacks virtualkit.autorekit permission");
             return;
         }
 
         // Bypass permission – skip auto-rekit
         if (player.hasPermission("virtualkit.autorekit.bypass")) {
+            plugin.getLogger().info("[VK-Debug] Auto-rekit skipped: player has virtualkit.autorekit.bypass permission (default OP bypasses unless negated)");
             return;
         }
 
@@ -113,8 +119,10 @@ public class WorldJoinRekitListener implements Listener {
         if (tempVal == null) {
             // Fall back to the default kit configured for all worlds
             tempVal = plugin.getConfig().get("auto-rekit-on-world-join.default-kit");
+            plugin.getLogger().info("[VK-Debug] Per-world config null, falling back to default-kit: " + tempVal);
         }
         if (tempVal == null) {
+            plugin.getLogger().info("[VK-Debug] Auto-rekit skipped: no world config and no default-kit found");
             return;
         }
         final Object configVal = tempVal;
@@ -128,21 +136,23 @@ public class WorldJoinRekitListener implements Listener {
             if (!player.getWorld().getName().equals(worldName)) return;
 
             if (onlyIfEmpty && !isInventoryEmpty(player)) {
+                plugin.getLogger().info("[VK-Debug] Auto-rekit skipped: inventory is not empty");
                 return;
             }
 
             if (configVal instanceof Number) {
                 int slot = ((Number) configVal).intValue();
                 if (slot > 0 && slot <= 9) {
+                    plugin.getLogger().info("[VK-Debug] Loading private kit slot: " + slot);
                     KitManager.get().loadKitSilent(player, slot);
                 }
             } else {
                 String kitId = configVal.toString();
                 if (!kitId.isEmpty() && !kitId.equals("0")) {
+                    plugin.getLogger().info("[VK-Debug] Loading public kit: " + kitId);
                     KitManager.get().loadPublicKitSilent(player, kitId);
                 }
             }
-
         }, delayTicks);
     }
 
