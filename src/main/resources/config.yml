@@ -185,24 +185,30 @@ feature:
   old-death-drops: false
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#                      ᴀᴜᴛᴏ-ʀᴇᴋɪᴛ ᴏɴ ᴡᴏʀʟᴅ ᴊᴏɪɴ
+#                      ᴀᴜᴛᴏ-ʀᴇᴋɪᴛ ᴏɴ ᴡᴏʀʟᴅ ᴊᴏɪɴ / ᴛᴇʟᴇᴘᴏʀᴛ
 # ═══════════════════════════════════════════════════════════════════════════════
-# Automatically load a kit when a player joins/switches to a world.
+# Automatically loads a kit when players join the server, switch worlds, or RTP.
 # Requires permission: virtualkit.autorekit (bypass with virtualkit.autorekit.bypass)
 auto-rekit-on-world-join:
   enabled: true
-  # Only rekit if the player's inventory is empty (don't overwrite existing gear)
+
+  # If true, players will only receive a kit if their inventory is completely empty.
+  # If false, their current inventory will be overwritten.
   only-if-empty: false
-  # Tick delay after joining before the kit is applied (20 ticks = 1 second)
+
+  # Tick delay before applying the kit (20 ticks = 1 second).
+  # Helps resolve conflicts with other inventory/spawn plugins that load data on join.
   delay-ticks: 5
-  # Default kit slot to load for all worlds (1-9).
-  # If the player has a saved kit in this slot, it will load their saved kit.
-  # If the slot is empty, it automatically falls back to the public "premade" kit.
-  # (Set to "premade" if you want to force the public premade kit for everyone).
+
+  # Default kit to load for any world that is not listed under 'worlds' overrides.
+  #  - Active players who HAVE saved custom kits (in slots 1-9) will receive their saved kit.
+  #  - New players who have NO kits saved at all will receive the public "premade" kit.
+  #  - Set this to "premade" if you want to force the public premade kit on everyone by default.
   default-kit: 1
-  # Per-world kit slot overrides.
-  # Format:   <world-name>: <kit-slot-number or public-kit-name>
-  # Use slot 0 to disable auto-rekit for a specific world.
+
+  # Per-world overrides. Configure slot numbers (1-9) or public kit names for specific worlds.
+  #  - Format:  <world-name>: <kit-slot-number or public-kit-name>
+  #  - Set to 0 to disable auto-rekit for a specific world.
   worlds:
     world: 1
     world_nether: 1

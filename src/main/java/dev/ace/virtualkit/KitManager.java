@@ -317,6 +317,16 @@ public class KitManager {
         return true;
     }
 
+    public boolean hasAnySavedKits(UUID uuid) {
+        for (int slot = 1; slot <= 9; slot++) {
+            ItemStack[] kit = kitByKitIDMap.get(IDUtil.getPlayerKitId(uuid, slot));
+            if (!isKitEmpty(kit)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean loadKitInternal(Player player, String kitId, String notFoundMessage, boolean isEnderChest,
             Runnable afterLoad) {
         if (player == null) {
@@ -329,7 +339,8 @@ public class KitManager {
                 plugin.getLogger().info("[VK-Debug] Player kit is empty/null for ID: " + kitId);
             }
             // Fallback for private kits only (not public, not enderchest, not kitroom)
-            if (!isEnderChest && !kitId.startsWith("public") && !kitId.startsWith("kitroom")) {
+            // AND only if they don't have any kits saved in any slot (slots 1-9)
+            if (!isEnderChest && !kitId.startsWith("public") && !kitId.startsWith("kitroom") && !hasAnySavedKits(player.getUniqueId())) {
                 int slotNum = 1;
                 try {
                     slotNum = Integer.parseInt(kitId.substring(kitId.length() - 1));
