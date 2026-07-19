@@ -195,8 +195,11 @@ auto-rekit-on-world-join:
   only-if-empty: false
   # Tick delay after joining before the kit is applied (20 ticks = 1 second)
   delay-ticks: 5
-  # Default kit to load for all worlds (can be slot 1-9 or public kit name like "premade")
-  default-kit: "premade"
+  # Default kit slot to load for all worlds (1-9).
+  # If the player has a saved kit in this slot, it will load their saved kit.
+  # If the slot is empty, it automatically falls back to the public "premade" kit.
+  # (Set to "premade" if you want to force the public premade kit for everyone).
+  default-kit: 1
   # Per-world kit slot overrides.
   # Format:   <world-name>: <kit-slot-number or public-kit-name>
   # Use slot 0 to disable auto-rekit for a specific world.
