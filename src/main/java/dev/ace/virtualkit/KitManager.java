@@ -12,19 +12,22 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class KitManager {
     private static KitManager instance;
     private final VirtualKits plugin;
-    private final HashMap<String, ItemStack[]> kitByKitIDMap;
-    private final HashMap<UUID, Integer> lastKitUsedByPlayer;
+    private final Map<String, ItemStack[]> kitByKitIDMap;
+    private final Map<UUID, Integer> lastKitUsedByPlayer;
     private final List<PublicKit> publicKitList;
+    private final Set<UUID> loadedPlayers;
 
     public KitManager(VirtualKits plugin) {
         this.plugin = plugin;
-        lastKitUsedByPlayer = new HashMap<>();
+        lastKitUsedByPlayer = new ConcurrentHashMap<>();
         publicKitList = new ArrayList<>();
-        kitByKitIDMap = new HashMap<>();
+        kitByKitIDMap = new ConcurrentHashMap<>();
+        loadedPlayers = ConcurrentHashMap.newKeySet();
         instance = this;
     }
 
@@ -450,6 +453,10 @@ public class KitManager {
         return kitByKitIDMap.get(IDUtil.getPublicKitId(id));
     }
 
+    public boolean isPlayerDataLoaded(UUID uuid) {
+        return loadedPlayers.contains(uuid);
+    }
+
     public void loadPlayerDataFromDB(UUID uuid) {
         for (int slot = 1; slot < 10; slot++) {
             String data = VirtualKits.storageManager.getKitDataByID(IDUtil.getPlayerKitId(uuid, slot));
@@ -471,6 +478,7 @@ public class KitManager {
                 }
             }
         }
+        loadedPlayers.add(uuid);
     }
 
     public void savePlayerKitsToDB(UUID uuid) {
@@ -489,6 +497,7 @@ public class KitManager {
             kitByKitIDMap.remove(IDUtil.getPlayerKitId(uuid, i));
             kitByKitIDMap.remove(IDUtil.getECId(uuid, i));
         }
+        loadedPlayers.remove(uuid);
     }
 
     /**

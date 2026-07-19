@@ -94,6 +94,15 @@ public class WorldJoinRekitListener implements Listener {
             plugin.getLogger().info("[VK-Debug] applyAutoRekit triggered for player: " + player.getName() + " in world: " + worldName);
         }
 
+        // Prevent race condition on join: if data isn't loaded yet, do nothing.
+        // The JoinListener will automatically fire applyAutoRekitOnJoin once the DB load completes.
+        if (!KitManager.get().isPlayerDataLoaded(player.getUniqueId())) {
+            if (debug) {
+                plugin.getLogger().info("[VK-Debug] Auto-rekit deferred: Player data is still loading from database.");
+            }
+            return;
+        }
+
         if (!plugin.getConfig().getBoolean("auto-rekit-on-world-join.enabled", false)) {
             if (debug) {
                 plugin.getLogger().info("[VK-Debug] Auto-rekit skipped: enabled is false in config");
@@ -157,14 +166,26 @@ public class WorldJoinRekitListener implements Listener {
                 return;
             }
 
+            // Robust slot parsing: handle Numbers, numeric strings, and 'k1'/'kit1' prefix formats
+            int slot = -1;
             if (configVal instanceof Number) {
-                int slot = ((Number) configVal).intValue();
-                if (slot > 0 && slot <= 9) {
-                    if (debug) {
-                        plugin.getLogger().info("[VK-Debug] Loading private kit slot: " + slot);
-                    }
-                    KitManager.get().loadKit(player, slot);
+                slot = ((Number) configVal).intValue();
+            } else {
+                String valStr = configVal.toString().trim().toLowerCase();
+                if (valStr.matches("[1-9]")) {
+                    slot = Integer.parseInt(valStr);
+                } else if (valStr.matches("k[1-9]")) {
+                    slot = Integer.parseInt(valStr.substring(1));
+                } else if (valStr.matches("kit[1-9]")) {
+                    slot = Integer.parseInt(valStr.substring(3));
                 }
+            }
+
+            if (slot >= 1 && slot <= 9) {
+                if (debug) {
+                    plugin.getLogger().info("[VK-Debug] Loading private kit slot: " + slot);
+                }
+                KitManager.get().loadKit(player, slot);
             } else {
                 String kitId = configVal.toString();
                 if (!kitId.isEmpty() && !kitId.equals("0")) {
